@@ -9,7 +9,6 @@ module permute_stage (
     input logic[RATE_SHAKE128-1:0] rate_input,
     input logic[31:0] output_size,
     input logic[1:0] operation_mode,
-    input logic copy_control_regs_en,
 
     // Outputs for next stage
     output logic[RATE_SHAKE128-1:0] rate_output,
@@ -34,6 +33,7 @@ module permute_stage (
     permute_fsm permute_stage_fsm (
         .clk                        (clk),
         .rst                        (rst),
+        .copy_control_regs_en       (copy_control_regs_en),
         .input_buffer_ready         (input_buffer_ready),
         .last_block_in_input_buffer (last_block_in_buffer),
         .round_done                 (input_buffer_full),

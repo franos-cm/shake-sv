@@ -37,23 +37,10 @@ module permute_datapath (
     logic[state_width-1:0] xor_mask;
     logic[w-1:0] round_constant;
 
-    logic hashing; // TODO: might be completely unnecessary, will have to check
-    
 
 
     // ------------------- Components -------------------
     //
-    // Reg for current mode, coming from previous stage
-    // input  logic clk,
-    // input  logic reset,  // synchronous reset
-    // input  logic set,    // pulse this high to latch a 1
-    // output logic q       // latched output
-    latch started_hash (
-        .clk  (clk),
-        .rst (rst),
-        .set (copy_control_regs_en),
-        .q (hashing)
-    );
     // Reg for current mode, coming from previous stage
     regn #(
         .N(2)

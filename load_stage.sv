@@ -15,7 +15,6 @@ module load_stage (
     // Pipeline handshaking
     output logic input_buffer_ready_wr,
     output logic last_block_in_buffer_wr,
-    output logic copy_control_regs_en,
 
     // External outputs
     output  logic ready_o
@@ -36,7 +35,6 @@ module load_stage (
         .ready_o                 (ready_o),
         .load_enable             (load_enable),
         .control_regs_enable     (control_regs_enable),
-        .copy_control_regs_en    (copy_control_regs_en),
         .input_buffer_ready_wr   (input_buffer_ready_wr),
         .last_block_in_buffer_wr (last_block_in_buffer_wr)
     );

@@ -44,7 +44,6 @@ module keccak (
         .input_buffer_out        (input_buffer_out),
         .output_size             (output_size),
         .operation_mode          (operation_mode),
-        .copy_control_regs_en    (copy_control_regs_en), // TODO: should I latch this?
         .input_buffer_ready_wr   (input_buffer_ready_wr),
         .last_block_in_buffer_wr (last_block_in_buffer_wr),
         .ready_o                 (ready_o)
@@ -71,7 +70,6 @@ module keccak (
         .rate_input                (input_buffer_out),
         .output_size               (output_size),
         .operation_mode            (operation_mode),
-        .copy_control_regs_en      (copy_control_regs_en),
         .rate_output               (output_buffer_in),
         .output_buffer_we          (output_buffer_we),
         .input_buffer_ready        (input_buffer_ready),

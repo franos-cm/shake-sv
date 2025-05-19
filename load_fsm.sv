@@ -9,7 +9,6 @@ module load_fsm (
     output logic ready_o,
     output logic load_enable,
     output logic control_regs_enable,
-    output logic copy_control_regs_en,
     output logic input_buffer_ready_wr, // Handshaking signal
     output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
 );
@@ -47,7 +46,6 @@ module load_fsm (
         load_enable            = 0;
         input_buffer_ready_wr  = 0;
         control_regs_enable    = 0;
-        copy_control_regs_en   = 0;
 
         unique case (current_state)
             // Initial state for resetting
@@ -84,7 +82,6 @@ module load_fsm (
                 else begin
                     input_buffer_ready_wr = 1; // Signal to next pipeline state that buffer is ready
                     next_state = last_input_block ? WAIT_HEADER : WAIT_LOAD;
-                    copy_control_regs_en = last_input_block;
                 end
             end
 
