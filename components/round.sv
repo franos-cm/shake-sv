@@ -1,10 +1,10 @@
-import keccak_pkg::state_width;
+import keccak_pkg::STATE_WIDTH;
 import keccak_pkg::w;
 
 module keccak_round (
-  input  logic [state_width-1:0] rin,
+  input  logic [STATE_WIDTH-1:0] rin,
   input  logic [w-1:0]           rc,
-  output logic [state_width-1:0] rout
+  output logic [STATE_WIDTH-1:0] rout
 );
 
   //-----------------------------------------------------------------------------  

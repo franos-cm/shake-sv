@@ -21,6 +21,8 @@ module load_datapath (
     logic [1:0]  operation_mode_reg;
     logic [10:0] block_size;
     logic [4:0]  max_buffer_depth;
+    logic [w-1:0] padded_input;
+    logic [w-1:0] padded_input_le; // Little endian representation
 
 
     // ------------------- Components -------------------
@@ -77,6 +79,7 @@ module load_datapath (
     );
 
     // TODO: add padding to before input buffer
+    assign padded_input_le = EndianSwitcher#(w)::switch(data_in);
     sipo_buffer #(
         .WIDTH(w),
         .DEPTH(RATE_SHAKE128/w) // TODO: does this division work?
@@ -84,7 +87,7 @@ module load_datapath (
         .clk (clk),
         .rst (rst),
         .en (load_enable),
-        .data_in (data_in),
+        .data_in (padded_input_le),
         .data_out (input_buffer_out)
     );
 

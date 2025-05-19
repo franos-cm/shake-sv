@@ -30,11 +30,11 @@ module permute_datapath (
     logic[1:0] operation_mode_reg;
     logic[10:0] block_size; 
 
-    logic[state_width-1:0] state_reg_in;
-    logic[state_width-1:0] state_reg_out;
+    logic[STATE_WIDTH-1:0] state_reg_in;
+    logic[STATE_WIDTH-1:0] state_reg_out;
     logic[$clog2(24)-1:0] round_num;
-    logic[state_width-1:0] round_in;
-    logic[state_width-1:0] xor_mask;
+    logic[STATE_WIDTH-1:0] round_in;
+    logic[STATE_WIDTH-1:0] xor_mask;
     logic[w-1:0] round_constant;
 
 
@@ -89,7 +89,7 @@ module permute_datapath (
 
     // State reg
     regn #(
-        .WIDTH(state_width)
+        .WIDTH(STATE_WIDTH)
     ) state_reg (
         .clk  (clk),
         .rst (rst),
@@ -132,6 +132,6 @@ module permute_datapath (
     assign operation_mode_out = operation_mode;
 
     // Output assignment
-    assign rate_output = state_reg_out[RATE_SHAKE128-1 : 0];
+    assign rate_output = EndianSwitcher#(RATE_SHAKE128)::switch(state_reg_out[STATE_WIDTH-1 -: RATE_SHAKE128]);
 
 endmodule
