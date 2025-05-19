@@ -4,13 +4,15 @@ module permute_fsm (
     input  logic input_buffer_ready,
     input  logic last_block_in_input_buffer,
     input  logic round_done,
-    input  logic output_buffer_ready,
+    input  logic output_buffer_available,
     input  logic last_output_block,
 
     output logic copy_control_regs_en,  // TODO: do I need to copy input size? Probably not, but double check it.
     output logic absorb_enable,
     output logic round_en,
+    output logic round_count_load,
     output logic output_buffer_we,         // NOTE: this means a previous stage of the pipeline is driving a next stage
+    output logic output_size_count_en,
     output logic input_buffer_ready_clr,   // Handshaking signal
     output logic last_block_in_buffer_clr  // Handshaking signal
 );
@@ -32,26 +34,28 @@ module permute_fsm (
     // State register
     always_ff @(posedge clk or posedge rst) begin
         if (rst)
-            current_state <= RESTART;
+            current_state <= RESET;
         else
             current_state <= next_state;
     end
 
+    assign output_size_count_en = output_buffer_we;
 
     // Next state logic
     always_comb begin
-        ready_o                  = 0;
-        input_buffer_we          = 0;
+        absorb_enable            = 0;
+        round_en                 = 0;
+        output_buffer_we         = 0;
         input_buffer_ready_clr   = 0;
         last_block_in_buffer_clr = 0;
-        copy_control_regs_en     = 0; // In a way, signals that a new hash has started...
+        copy_control_regs_en     = 0;
+        round_count_load         = 0;
 
         unique case (current_state)
             // Initial state for resetting
             RESET: begin
                 next_state = WAIT_FIRST_ABSORB;
-                input_buffer_ready_clr = 1;
-                last_block_in_buffer_clr = 1;
+                round_count_load = 1; // TODO: not sure this will work
                 // TODO: drive a universal reset here
             end
 
@@ -115,7 +119,7 @@ module permute_fsm (
 
             // If output buffer is ready, dump digest on it
             DUMP: begin
-                output_buffer_we = output_buffer_ready;
+                output_buffer_we = output_buffer_available;
 
                 // This will only happen in the first DUMP cycle, where out buffer is ready by definition,
                 // or in subsequent DUMP cycles, where WAIT_DUMP guarantees out buffer is ready.
@@ -126,7 +130,7 @@ module permute_fsm (
                 else begin
                     // Trying to get rid of that last state by cycling in DUMP
                     // TODO: more complex transitions if last_output_block, straight to ABSORB or ABSORB_LAST
-                    next_state = output_buffer_ready ? WAIT_FIRST_ABSORB : DUMP;
+                    next_state = output_buffer_available ? WAIT_FIRST_ABSORB : DUMP;
                 end
             end
 
@@ -138,7 +142,7 @@ module permute_fsm (
 
             // Squeeze another block
             WAIT_DUMP: begin
-                next_state = output_buffer_ready ? DUMP : WAIT_DUMP;
+                next_state = output_buffer_available ? DUMP : WAIT_DUMP;
             end
 
             default: next_state = RESET;

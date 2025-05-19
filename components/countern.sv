@@ -4,8 +4,8 @@ module countern #(
     input  logic  clk,
     input  logic  rst,
     input  logic  en,
-    output logic  load_max,
-    output logic[WIDTH-1:0] max_count,
+    input  logic  load_max,
+    input  logic[WIDTH-1:0] max_count,
 
     output logic[WIDTH-1:0] counter,
     output logic count_end,
@@ -19,19 +19,20 @@ module countern #(
     logic [WIDTH-1:0] _max_count;
 
     always_ff @(posedge clk or posedge rst) begin
-        if (rst)
+        if (rst) begin
             _counter <= '0;
-            _max_count <= max_count;
+            _max_count <= '1;
+        end
         else begin
             if (load_max)
                 _max_count <= max_count;
             else if (en)
-                _counter <= _counter == max_count ? '0 : _counter + 1;
+                _counter <= _counter == _max_count ? '0 : _counter + 1;
         end
             
     end
 
     assign counter = _counter;
-    assign count_end = _counter == max_count;
+    assign count_end = _counter == _max_count;
     assign count_start = _counter == '0;
 endmodule

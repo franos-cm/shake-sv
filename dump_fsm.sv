@@ -1,28 +1,22 @@
-module load_fsm (
+module dump_fsm (
     input  logic clk,
     input  logic rst,
-    input  logic ready_i,
-    input  logic output_block_pending,
+    input  logic ready_in,
+    input  logic output_buffer_we_in,
+    input  logic output_buffer_empty,
 
-    output logic output_counter_load,
+    // Control output signals
+    output logic output_buffer_we_out, // NOTE: exists only out of formality
+    output logic output_counter_load,  //       and this, out of carefulness
     output logic output_counter_rst,
+    output logic output_buffer_shift_en,
 
+    // External outputs
+    output logic valid_out,
 
-
-    input  logic valid_i,
-    input  logic input_buffer_empty,
-    input  logic input_buffer_full,
-    input  logic last_input_block,
-
-    output logic ready_o,
-    output logic load_enable,
-    output logic control_regs_enable,
-    output logic copy_control_regs_en,
-    output logic input_buffer_ready_wr,  // Handshaking signal
-    output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
+    // Handshaking
+    output logic output_buffer_available_wr
 );
-
-    logic input_buffer_loadable;
 
     // Define states using enum
     typedef enum logic [5:0] {
@@ -41,33 +35,42 @@ module load_fsm (
     end
 
 
-    // TODO: this will probably include also some data from the second stage,
-    // like if the buffer has been used or not
-    assign input_buffer_loadable = input_buffer_empty;
-    assign last_block_in_buffer_wr = last_input_block;
-
-
     // Next state logic
     always_comb begin
-        output_counter_load                = 0;
-        output_counter_rst            = 0;
-        input_buffer_ready_wr  = 0;
-        control_regs_enable    = 0;
-        copy_control_regs_en   = 0;
+        output_counter_load        = 0;
+        output_counter_rst         = 0;
+        output_buffer_shift_en     = 0;
+        output_buffer_available_wr = 0;
+        output_buffer_we_out       = 0;
+        valid_out                  = 0;
 
         unique case (current_state)
-            // Initial state for resetting
+            // Initial state
             IDLE: begin
-                if (output_block_pending) begin
+                if (output_buffer_we_in) begin
+                    output_counter_load = 1;
+                    output_buffer_we_out = 1;
                     next_state = WRITING;
                 end
                 else begin
-                    output_counter_rst = 1;
                     next_state = IDLE;
                 end
             end
 
-            default: next_state = RESET;
+            WRITING: begin
+                if (!output_buffer_empty) begin
+                    valid_out = 1;
+                    output_buffer_shift_en = ready_in;
+                    next_state = WRITING;
+                end
+                else begin
+                    output_buffer_available_wr = 1;
+                    output_counter_rst = 1; // TODO: possibly unnecessary
+                    next_state = IDLE;
+                end
+            end
+
+            default: next_state = IDLE;
         endcase
     end
 

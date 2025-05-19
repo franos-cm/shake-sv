@@ -28,7 +28,7 @@ module load_datapath (
     // Operation mode reg, to decide current block size
     regn #(
         .WIDTH(2)
-    ) operation_mode_reg (
+    ) op_mode_reg (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
@@ -39,11 +39,11 @@ module load_datapath (
     // Output size reg, to transmit to next pipeline stage
     regn #(
         .WIDTH(32)
-    ) operation_mode_reg (
+    ) output_size_reg (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
-        .data_in ('0 & data_in[59:32]), // TODO: not sure this works
+        .data_in ({'0, data_in[59:32]}), // TODO: not sure this works
         .data_out (output_size)
     );
 
@@ -57,7 +57,7 @@ module load_datapath (
         .en_write(control_regs_enable),
         .en_count(load_enable),
         .block_size(block_size),
-        .step_size(0' & logic'(w)), // TODO: can I do this?
+        .step_size({'0, logic'(w)}), // TODO: can I do this?
         .data_in(data_in[31:0]),
         .last_word(last_input_word),
         .last_block(last_input_block)

@@ -13,8 +13,6 @@ module load_fsm (
     output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
 );
 
-    logic input_buffer_loadable;
-
     // Define states using enum
     typedef enum logic [5:0] {
         RESET,
@@ -28,7 +26,7 @@ module load_fsm (
     // State register
     always_ff @(posedge clk or posedge rst) begin
         if (rst)
-            current_state <= RESTART;
+            current_state <= RESET;
         else
             current_state <= next_state;
     end
@@ -36,7 +34,6 @@ module load_fsm (
 
     // TODO: this will probably include also some data from the second stage,
     // like if the buffer has been used or not
-    assign input_buffer_loadable = input_buffer_empty;
     assign last_block_in_buffer_wr = last_input_block;
 
 

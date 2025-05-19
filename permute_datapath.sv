@@ -6,9 +6,11 @@ module permute_datapath (
     input  logic clk,
     input  logic rst,
     // Signals from FSM
-    input  logic copy_control_regs_en;
+    input  logic copy_control_regs_en,
     input  logic absorb_enable,
     input  logic round_en,
+    input  logic round_count_load,
+    input  logic output_size_count_en,
     // Signals from previous pipeline stage
     input  logic[RATE_SHAKE128-1:0] rate_input,
     input  logic[31:0] output_size_in,
@@ -18,6 +20,7 @@ module permute_datapath (
     // Signals for next pipeline stage
     output logic round_done,
     output logic last_output_block,
+    output logic[1:0] operation_mode_out,
     output logic[RATE_SHAKE128-1:0] rate_output
     
 );
@@ -26,9 +29,6 @@ module permute_datapath (
     logic[1:0] operation_mode;
     logic[1:0] operation_mode_reg;
     logic[10:0] block_size; 
-
-    logic[10:0] last_output_block;
-    logic[10:0] last_output_block;
 
     logic[state_width-1:0] state_reg_in;
     logic[state_width-1:0] state_reg_out;
@@ -43,8 +43,8 @@ module permute_datapath (
     //
     // Reg for current mode, coming from previous stage
     regn #(
-        .N(2)
-    ) state_reg (
+        .WIDTH(2)
+    ) op_mode_reg (
         .clk  (clk),
         .rst (rst),
         .en (copy_control_regs_en),
@@ -60,9 +60,9 @@ module permute_datapath (
         .clk (clk),
         .rst (rst),
         .en_write(copy_control_regs_en),
-        .en_count(load_enable), // TODO: Change these
+        .en_count(output_size_count_en),
         .block_size(block_size),
-        .step_size(32'block_size), // TODO: is this conversion fine?
+        .step_size({'0, block_size}), // TODO: is this conversion fine?
         .data_in(output_size_in),
         .last_block(last_output_block)
     );
@@ -75,7 +75,7 @@ module permute_datapath (
         .clk  (clk),
         .rst (rst),  // TODO: Maybe get a more specific reset?
         .en (round_en),
-        .load_max (0),
+        .load_max (round_count_load),
         .max_count(5'd24),    // TODO: Maybe 25?
         .counter(round_num),
         .count_end(round_done)
@@ -89,7 +89,7 @@ module permute_datapath (
 
     // State reg
     regn #(
-        .N(state_width)
+        .WIDTH(state_width)
     ) state_reg (
         .clk  (clk),
         .rst (rst),
@@ -100,9 +100,9 @@ module permute_datapath (
 
     // Keccak round
     keccak_round round(
-        .round_in(round_in),
-        .round_constant_signal(round_constant),
-        .round_out(state_reg_in)
+        .rin(round_in),
+        .rc(round_constant),
+        .rout(state_reg_in)
     );
 
     // ------------ Combinatorial assignments -----------
@@ -111,8 +111,8 @@ module permute_datapath (
     assign xor_mask = (
         absorb_enable
         ? (operation_mode == SHAKE256_MODE_VEC
-            ? rate_input[RATE_SHAKE256-1 : 0] & '0
-            : rate_input[RATE_SHAKE128-1 : 0] & '0)
+            ? {rate_input[RATE_SHAKE256-1 : 0], '0}
+            : {rate_input[RATE_SHAKE128-1 : 0], '0})
         : '0
     );
     assign round_in = state_reg_out ^ xor_mask;
@@ -129,6 +129,7 @@ module permute_datapath (
     // Kind of a hack: enable passthrough so we can get the
     // correct value of operation mode in the first absorb
     assign operation_mode = copy_control_regs_en ? operation_mode_in : operation_mode_reg;
+    assign operation_mode_out = operation_mode;
 
     // Output assignment
     assign rate_output = state_reg_out[RATE_SHAKE128-1 : 0];

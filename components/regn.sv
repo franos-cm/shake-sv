@@ -1,6 +1,6 @@
 module regn #(
     parameter int WIDTH = 32,
-    parameter logic [N-1:0] INIT = '0  // default initialization
+    parameter logic [WIDTH-1:0] INIT = '0  // default initialization
 ) (
     input  logic clk,
     input  logic rst,

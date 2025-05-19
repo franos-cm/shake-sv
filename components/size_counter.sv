@@ -2,7 +2,7 @@ import keccak_pkg::*;
 
 module size_counter #(
     parameter int WIDTH = 32,
-    parameter int w = 64,
+    parameter int w = 64
 ) (
     input  logic  clk,
     input  logic  rst,
@@ -14,7 +14,7 @@ module size_counter #(
 
     output logic last_word,
     output logic last_block,
-    output logic[$clog2(w)-1:0] remainder
+    output logic[$clog2(w)-1:0] last_word_remainder
 );
     logic [WIDTH-1:0] _counter;
 
@@ -31,7 +31,7 @@ module size_counter #(
         end 
     end
 
-    assign last_word = (_counter <= WIDTH'w);
+    assign last_word = (_counter <= w); // TOOD: not sur ethis conversion works
     // remainder is only useful during last_word... maybe not the most intuitive design
     assign last_word_remainder = _counter[($clog2(w)-1):0];
     assign last_block = (_counter <= block_size);

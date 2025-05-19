@@ -8,7 +8,7 @@ module load_stage (
     input logic[w-1:0] data_in,
         
     // Inputs for next stage
-    output logic[w-1:0] input_buffer_out,
+    output logic[RATE_SHAKE128-1:0] input_buffer_out,
     output logic[31:0] output_size,
     output logic[1:0] operation_mode,
 
@@ -49,7 +49,8 @@ module load_stage (
         .input_buffer_full   (input_buffer_full),
         .last_input_block    (last_input_block),
         .input_buffer_out    (input_buffer_out),
-        .output_size         (output_size)
+        .output_size         (output_size),
+        .operation_mode      (operation_mode)
     );
 
 endmodule
