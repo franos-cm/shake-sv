@@ -1,12 +1,12 @@
 module load_fsm (
     input  logic clk,
     input  logic rst,
-    input  logic valid_i,
+    input  logic valid_in,
     input  logic input_buffer_empty,
     input  logic input_buffer_full,
     input  logic last_input_block,
 
-    output logic ready_o,
+    output logic ready_out,
     output logic load_enable,
     output logic control_regs_enable,
     output logic padding_reset,
@@ -40,7 +40,7 @@ module load_fsm (
 
     // Next state logic
     always_comb begin
-        ready_o                = 0;
+        ready_out              = 0;
         load_enable            = 0;
         input_buffer_ready_wr  = 0;
         control_regs_enable    = 0;
@@ -53,10 +53,10 @@ module load_fsm (
                 // TODO: drive a universal reset here
             end
 
-            // Waits for initial input (valid_i = 1), and when that happens,
+            // Waits for initial input (valid_in = 1), and when that happens,
             // registers input_length, output_length, and mode, in first stage regs
             WAIT_HEADER: begin
-                if (valid_i) begin
+                if (valid_in) begin
                     next_state = WAIT_LOAD;
                     control_regs_enable = 1;
                 end else begin
@@ -69,12 +69,12 @@ module load_fsm (
                 next_state = input_buffer_empty ? LOAD : WAIT_LOAD;
             end
 
-            //  When it is available, load sipo according to valid_i
+            //  When it is available, load sipo according to valid_in
             LOAD: begin
                 if (!input_buffer_full) begin
-                    if (valid_i) begin
+                    if (valid_in) begin
                         load_enable = 1;
-                        ready_o = 1;
+                        ready_out = 1;
                     end
                     next_state = LOAD;
                 end

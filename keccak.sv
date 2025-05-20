@@ -6,11 +6,11 @@ module keccak (
     input  logic rst,
 
     // Control input signals
-    input  logic ready_i,
-    input  logic valid_i,
+    input  logic ready_in,
+    input  logic valid_in,
     // Control input signals
-    output  logic ready_o,
-    output  logic valid_o,
+    output  logic ready_out,
+    output  logic valid_out,
 
     // Data input signals
     input logic[w-1:0] data_in,
@@ -18,6 +18,10 @@ module keccak (
     // Data output signals
     output logic[w-1:0] data_out
 );
+
+    // Changing polarity to be coherent with reference_code
+    logic valid_in_internal;
+    logic ready_in_internal;
 
     // First stage signals
     logic[RATE_SHAKE128-1:0] input_buffer_out;
@@ -40,18 +44,23 @@ module keccak (
     logic output_buffer_available_wr;
 
 
+    // Polarity change
+    assign valid_in_internal = !valid_in;
+    assign ready_in_internal = !ready_in;
+
+
     // First pipeline stage
     load_stage load_pipeline_stage (
         .clk                     (clk),
         .rst                     (rst),
-        .valid_i                 (valid_i),
+        .valid_in                (valid_in_internal),
         .data_in                 (data_in),
         .input_buffer_out        (input_buffer_out),
         .output_size             (output_size),
         .operation_mode          (operation_mode_lp),
         .input_buffer_ready_wr   (input_buffer_ready_wr),
         .last_block_in_buffer_wr (last_block_in_buffer_wr),
-        .ready_o                 (ready_o)
+        .ready_out               (ready_out)
     );
 
     // Signaling between first and second stage
@@ -97,12 +106,12 @@ module keccak (
     dump_stage dump_pipeline_stage (
         .clk                         (clk),
         .rst                         (rst),
-        .ready_in                    (ready_i),
+        .ready_in                    (ready_in_internal),
         .output_buffer_in            (output_buffer_in),
         .operation_mode              (operation_mode_pd),
         .output_buffer_we            (output_buffer_we),
         .data_out                    (data_out),
-        .valid_out                   (valid_o), 
+        .valid_out                   (valid_out), 
         .output_buffer_available_wr  (output_buffer_available_wr)
     );
 

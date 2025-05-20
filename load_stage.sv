@@ -4,7 +4,7 @@ module load_stage (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic valid_i,
+    input  logic valid_in,
     input logic[w-1:0] data_in,
         
     // Inputs for next stage
@@ -17,7 +17,7 @@ module load_stage (
     output logic last_block_in_buffer_wr,
 
     // External outputs
-    output  logic ready_o
+    output  logic ready_out
 );
     logic input_buffer_empty;
     logic input_buffer_full;
@@ -29,11 +29,11 @@ module load_stage (
     load_fsm load_stage_fsm (
         .clk                     (clk),
         .rst                     (rst),
-        .valid_i                 (valid_i),
+        .valid_in                (valid_in),
         .input_buffer_empty      (input_buffer_empty),
         .input_buffer_full       (input_buffer_full),
         .last_input_block        (last_input_block),
-        .ready_o                 (ready_o),
+        .ready_out               (ready_out),
         .load_enable             (load_enable),
         .control_regs_enable     (control_regs_enable),
         .input_buffer_ready_wr   (input_buffer_ready_wr),
