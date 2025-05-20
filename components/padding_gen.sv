@@ -1,31 +1,65 @@
 import keccak_pkg::*;
 
-module padding_generator #(
-    parameter int WIDTH = 32,
-    parameter int bytes_in_block =  64
-) (
+module padding_generator (
     input  logic  clk,
     input  logic  rst,
-    input  logic[WIDTH-1:0]  input_byte_size,
-    output logic[w-1:0] padding
-);
-    logic [WIDTH-1:0] _counter;
-    localparam int byte_delta = w / 8;
 
-    countern #(
-        .n(17)
-    ) counter_mod_17 (
-        .clk  (clk),
-        .rst (rst),
-        .en  (en_count),
-        .count_up (1'b0)
+    input logic[w-1:0] data_in,
+    input logic [w_byte_width-1:0] valid_word_bytes, // How many of the input bytes are valid
+    input logic padding_needed,     // Flag if padding is already needed
+    input logic last_word_in_block, // Flag if current word is last of block
+    input logic padding_reset,      // Flag to reset padding latches
+
+    // Data out
+    output logic last_block,
+    output logic[w-1:0] data_out
+);
+    // Domain separator for SHAKE, is appended just after message 
+    localparam logic [7:0] DOMAIN_SEPARATOR_BYTE = 8'h1F;
+    // Final byte when padding has multiple bytes
+    localparam logic [7:0] TERMINATOR_PADDING_BYTE = 8'h80;
+    // Used in edge case when the last byte has both the domain separator, and the 10*1 padding
+    localparam logic [7:0] COMPLETE_PADDING_BYTE = 8'h9F;
+
+    
+    logic [w_byte_size-1:0] first_pad_word_sel;
+    logic [w_byte_size-1:0] padding_mask_sel;
+    logic [7:0] byte_pad[w_byte_size-1:0];
+    logic first_pad_used_set;
+    logic first_pad_used;
+
+
+    // Latch to know if the first pad has already been used
+    latch first_pad_used_latch (
+        .clk (clk),
+        .set (first_pad_used_set),
+        .rst (padding_reset || rst),
+        .q   (first_pad_used)
     );
 
-    always_ff @(posedge clk or posedge rst) begin
-        if (rst)
-            _counter <= '0;
+
+    // Decide what the padding should be for each byte. NOTE: lookup tables might be better
+    assign first_pad_word_sel = (padding_needed && !first_pad_used) ? (8'b1000_0000 >> valid_word_bytes) : '0;
+    assign padding_mask_sel = padding_needed ? (8'hFF >> valid_word_bytes) : '0;
+    // Decide when the first_pad has been applied
+    assign first_pad_used_set = padding_needed && (valid_word_bytes != '0);
+    assign last_block = first_pad_used;
+
+    always_comb begin
+        // Select DOMAIN_SEPARATOR_BYTE for the first padded byte of the word
+        for (int i = 1; i < w_byte_size; i++)
+            byte_pad[i] = (first_pad_word_sel[i]) ? DOMAIN_SEPARATOR_BYTE : '0;
+
+        case ({last_word_in_block, first_pad_word_sel[0]})
+            2'b00:     byte_pad[0] = 8'b0;
+            2'b01:     byte_pad[0] = DOMAIN_SEPARATOR_BYTE;   
+            2'b10:     byte_pad[0] = TERMINATOR_PADDING_BYTE;   
+            2'b11:     byte_pad[0] = COMPLETE_PADDING_BYTE;   
+        endcase
+
+        for (int i = 0; i < w_byte_size; i++)
+            data_out[(i+1)*8-1 -: 8] = padding_mask_sel ? byte_pad[i] : data_in[(i+1)*8-1 -: 8];
     end
 
-    assign input_bytes_left = _counter[($clog2(bytes_in_block)-1):0];
-    assign last_block = (_counter <= byte_delta);
+
 endmodule

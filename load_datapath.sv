@@ -6,6 +6,7 @@ module load_datapath (
     input  logic rst,
     input  logic load_enable,
     input  logic control_regs_enable,
+    input  logic padding_reset,
     input  logic[w-1:0] data_in,
 
     output logic input_buffer_empty,
@@ -17,12 +18,13 @@ module load_datapath (
 );
     // ---------- Internal signals declaration ----------
     //
-    logic last_input_word;
-    logic [1:0]  operation_mode_reg;
-    logic [10:0] block_size;
-    logic [4:0]  max_buffer_depth;
-    logic [w-1:0] padded_input;
-    logic [w-1:0] padded_input_le; // Little endian representation
+    logic last_valid_input_word;
+    logic last_word_in_block;
+    logic [4:0] input_buffer_counter;
+    logic [1:0] operation_mode_reg;
+    logic [4:0] max_buffer_depth;
+    logic [w-1:0] padded_data;    // Data after its been padded
+    logic [w-1:0] padded_data_le; // Little endian representation
 
 
     // ------------------- Components -------------------
@@ -34,7 +36,7 @@ module load_datapath (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
-        .data_in (data_in[62:61]), // We only need the middle bits, those are the ones that change
+        .data_in (data_in[62:61]), // NOTE: only these middle bits are needed, since those are the ones that change
         .data_out (operation_mode_reg)
     );
 
@@ -45,27 +47,50 @@ module load_datapath (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
-        .data_in ({'0, data_in[59:32]}), // TODO: not sure this works
+        .data_in ({4'b0, data_in[59:32]}),
         .data_out (output_size)
     );
 
-    // Input size counter, to count down in this stage
+    // Input counter
+    logic[w_bit_width-1:0] last_word_remainder;
+    logic[w_byte_width-1:0] valid_word_bytes;
+
+    // NOTE doing this in a parametric way possibly makes it more confusing
+    assign valid_word_bytes = last_word_remainder[w_bit_width-1:3];
+    assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:0], 1'b0}); // Hacky way of subtracting 1 from odd number
+
     size_counter #(
         .WIDTH(32),
         .w(w)
     ) input_size_left (
         .clk (clk),
         .rst (rst),
-        .en_write(control_regs_enable),
-        .en_count(load_enable),
-        .block_size(block_size),
-        .step_size({'0, logic'(w)}), // TODO: can I do this?
         .data_in(data_in[31:0]),
-        .last_word(last_input_word),
-        .last_block(last_input_block)
+        .en_write(control_regs_enable),
+        .step_size({'0, logic'(w)}),
+        .en_count(load_enable),
+        .last_word(last_valid_input_word),
+        .last_word_remainder(last_word_remainder)
+        // The block_size input doesnt really matter here.
+        // That is, since we need to account for padding,
+        // last_block is driven by the padding generator.
     );
 
-    // Counter for input buffer
+    // Padding Generator
+    padding_generator padding_gen (
+        .clk (clk),
+        .rst (rst),
+        .data_in (data_in),
+        .valid_word_bytes(valid_word_bytes),
+        .padding_needed(last_valid_input_word),
+        .last_word_in_block(last_word_in_block),
+        .padding_reset(padding_reset),
+        .last_block(last_input_block),
+        .data_out(padded_data)
+    );
+
+    // Counter for input buffer: corresponds to how many positions are filled
+    // TODO: Currently, if this counts to N, there are N+1 states, which might not be desirable
     countern #(
         .WIDTH(5)
     ) input_counter (
@@ -75,19 +100,21 @@ module load_datapath (
         .load_max (control_regs_enable),
         .max_count (max_buffer_depth),
         .count_start(input_buffer_empty),
-        .count_end (input_buffer_full)
+        .count_end (input_buffer_full),
+        .counter(input_buffer_counter)
     );
 
-    // TODO: add padding to before input buffer
-    assign padded_input_le = EndianSwitcher#(w)::switch(data_in);
+
+    // Serial-in, Parallel-out buffer for input,
+    // after its been padded and had its endianness switched
     sipo_buffer #(
         .WIDTH(w),
-        .DEPTH(RATE_SHAKE128/w) // TODO: does this division work?
+        .DEPTH(RATE_SHAKE128/w)
     ) input_buffer(
         .clk (clk),
         .rst (rst),
         .en (load_enable),
-        .data_in (padded_input_le),
+        .data_in (padded_data_le),
         .data_out (input_buffer_out)
     );
 
@@ -97,23 +124,16 @@ module load_datapath (
     // Decide block size based on current operation mode
     always_comb begin
         unique case (operation_mode)
-            SHAKE256_MODE_VEC: begin
-                block_size = RATE_SHAKE256_VEC;
-                max_buffer_depth = 5'd17; // TODO: Maybe 18?
-            end
-            SHAKE128_MODE_VEC: begin
-                block_size = RATE_SHAKE128_VEC;
-                max_buffer_depth = 5'd21;
-            end
-            default: begin
-                block_size = '0;
-                max_buffer_depth = 5'd21;
-            end
+            SHAKE256_MODE_VEC: max_buffer_depth = 5'd17;
+            SHAKE128_MODE_VEC: max_buffer_depth = 5'd21;
+            default: max_buffer_depth = 5'd21;
         endcase
     end
     // Kind of a hack: enable passthrough so we can get the
     // correct value of operation mode
     assign operation_mode = control_regs_enable ? data_in[62:61] : operation_mode_reg;
+    // Input transformations
+    assign padded_data_le = EndianSwitcher#(w)::switch(padded_data);
 
 
 endmodule

@@ -76,7 +76,7 @@ module permute_datapath (
         .rst (rst),  // TODO: Maybe get a more specific reset?
         .en (round_en),
         .load_max (round_count_load),
-        .max_count(5'd24),    // TODO: Maybe 25?
+        .max_count(5'd24),    // TODO: Maybe 23?
         .counter(round_num),
         .count_end(round_done)
     );

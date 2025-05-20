@@ -24,6 +24,7 @@ module load_stage (
     logic last_input_block;
     logic load_enable;
     logic control_regs_enable;
+    logic padding_reset;
 
     load_fsm load_stage_fsm (
         .clk                     (clk),
@@ -36,7 +37,8 @@ module load_stage (
         .load_enable             (load_enable),
         .control_regs_enable     (control_regs_enable),
         .input_buffer_ready_wr   (input_buffer_ready_wr),
-        .last_block_in_buffer_wr (last_block_in_buffer_wr)
+        .last_block_in_buffer_wr (last_block_in_buffer_wr),
+        .padding_reset           (padding_reset)
     );
 
     load_datapath load_stage_datapath (
@@ -50,7 +52,8 @@ module load_stage (
         .last_input_block    (last_input_block),
         .input_buffer_out    (input_buffer_out),
         .output_size         (output_size),
-        .operation_mode      (operation_mode)
+        .operation_mode      (operation_mode),
+        .padding_reset       (padding_reset)
     );
 
 endmodule

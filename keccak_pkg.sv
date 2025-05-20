@@ -4,6 +4,10 @@ package keccak_pkg;
   localparam int num_plane = 5;
   localparam int num_sheet = 5;
   localparam int w = 64;
+  localparam int w_byte_size = w / 8;
+  localparam int w_bit_width = $clog2(w);
+  localparam int w_byte_width = $clog2(w) - 3;
+
   localparam int STATE_WIDTH = 1600;
   localparam int RATE_SHAKE256 = 1088;
   localparam int RATE_SHAKE128 = 1344;
