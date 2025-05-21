@@ -6,9 +6,11 @@ module load_datapath (
     input  logic rst,
     input  logic load_enable,
     input  logic control_regs_enable,
+    input  logic padding_enable,
     input  logic padding_reset,
     input  logic[w-1:0] data_in,
 
+    output logic last_valid_input_word,
     output logic input_buffer_empty,
     output logic input_buffer_full,
     output logic last_input_block,
@@ -18,7 +20,6 @@ module load_datapath (
 );
     // ---------- Internal signals declaration ----------
     //
-    logic last_valid_input_word;
     logic last_word_in_block;
     logic [4:0] input_buffer_counter;
     logic [1:0] operation_mode_reg;
@@ -57,7 +58,8 @@ module load_datapath (
 
     // NOTE doing this in a parametric way possibly makes it more confusing
     assign valid_word_bytes = last_word_remainder[w_bit_width-1:3];
-    assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:0], 1'b0}); // Hacky way of subtracting 1 from odd number
+    // NOTE: hacky way of subtracting 1 from odd number, but it should simplify synthesis
+    assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
 
     size_counter #(
         .WIDTH(32),
@@ -67,7 +69,7 @@ module load_datapath (
         .rst (rst),
         .data_in(data_in[31:0]),
         .en_write(control_regs_enable),
-        .step_size({'0, logic'(w)}),
+        .step_size(w),
         .en_count(load_enable),
         .last_word(last_valid_input_word),
         .last_word_remainder(last_word_remainder)
@@ -82,7 +84,7 @@ module load_datapath (
         .rst (rst),
         .data_in (data_in),
         .valid_word_bytes(valid_word_bytes),
-        .padding_needed(last_valid_input_word),
+        .padding_enable(padding_enable),
         .last_word_in_block(last_word_in_block),
         .padding_reset(padding_reset),
         .last_block(last_input_block),

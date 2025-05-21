@@ -5,11 +5,13 @@ module load_fsm (
     input  logic input_buffer_empty,
     input  logic input_buffer_full,
     input  logic last_input_block,
+    input  logic last_valid_input_word,
 
     output logic ready_out,
     output logic load_enable,
     output logic control_regs_enable,
     output logic padding_reset,
+    output logic padding_enable,
     output logic input_buffer_ready_wr, // Handshaking signal
     output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
 );
@@ -44,6 +46,7 @@ module load_fsm (
         load_enable            = 0;
         input_buffer_ready_wr  = 0;
         control_regs_enable    = 0;
+        padding_enable         = 0;
         padding_reset          = 0;
 
         unique case (current_state)
@@ -59,6 +62,7 @@ module load_fsm (
                 if (valid_in) begin
                     next_state = WAIT_LOAD;
                     control_regs_enable = 1;
+                    ready_out = 1;
                 end else begin
                     next_state = WAIT_HEADER;
                 end
@@ -71,17 +75,16 @@ module load_fsm (
 
             //  When it is available, load sipo according to valid_in
             LOAD: begin
+                padding_enable = last_valid_input_word;
                 if (!input_buffer_full) begin
-                    if (valid_in) begin
-                        load_enable = 1;
-                        ready_out = 1;
-                    end
+                    load_enable = valid_in || padding_enable;
+                    ready_out = valid_in;
                     next_state = LOAD;
                 end
                 else begin
                     input_buffer_ready_wr = 1; // Signal to next pipeline state that buffer is ready
-                    next_state = last_input_block ? WAIT_HEADER : WAIT_LOAD;
                     padding_reset = last_input_block;
+                    next_state = last_input_block ? WAIT_HEADER : WAIT_LOAD;
                 end
             end
 

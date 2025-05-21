@@ -6,7 +6,7 @@ module padding_generator (
 
     input logic[w-1:0] data_in,
     input logic [w_byte_width-1:0] valid_word_bytes, // How many of the input bytes are valid
-    input logic padding_needed,     // Flag if padding is already needed
+    input logic padding_enable,     // Flag if padding is already needed
     input logic last_word_in_block, // Flag if current word is last of block
     input logic padding_reset,      // Flag to reset padding latches
 
@@ -39,10 +39,10 @@ module padding_generator (
 
 
     // Decide what the padding should be for each byte. NOTE: lookup tables might be better
-    assign first_pad_word_sel = (padding_needed && !first_pad_used) ? (8'b1000_0000 >> valid_word_bytes) : '0;
-    assign padding_mask_sel = padding_needed ? (8'hFF >> valid_word_bytes) : '0;
+    assign first_pad_word_sel = (padding_enable && !first_pad_used) ? (8'b1000_0000 >> valid_word_bytes) : '0;
+    assign padding_mask_sel = padding_enable ? (8'hFF >> valid_word_bytes) : '0;
     // Decide when the first_pad has been applied
-    assign first_pad_used_set = padding_needed && (valid_word_bytes != '0);
+    assign first_pad_used_set = padding_enable && (valid_word_bytes != '0);
     assign last_block = first_pad_used;
 
     always_comb begin
@@ -58,7 +58,7 @@ module padding_generator (
         endcase
 
         for (int i = 0; i < w_byte_size; i++)
-            data_out[(i+1)*8-1 -: 8] = padding_mask_sel ? byte_pad[i] : data_in[(i+1)*8-1 -: 8];
+            data_out[(i+1)*8-1 -: 8] = padding_mask_sel[i] ? byte_pad[i] : data_in[(i+1)*8-1 -: 8];
     end
 
 
