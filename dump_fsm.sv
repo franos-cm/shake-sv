@@ -2,12 +2,13 @@ module dump_fsm (
     input  logic clk,
     input  logic rst,
     input  logic ready_in,
-    input  logic output_buffer_we_in,
+    input  logic last_output_word,
     input  logic output_buffer_empty,
+    input  logic output_buffer_we_in,
 
     // Control output signals
-    output logic output_buffer_we_out, // NOTE: exists only out of formality
-    output logic output_counter_load,  //       and this, out of carefulness
+    output logic output_buffer_we_out,
+    output logic output_counter_load,
     output logic output_counter_rst,
     output logic output_buffer_shift_en,
 
@@ -53,9 +54,15 @@ module dump_fsm (
                     next_state = WRITING;
                 end
                 else begin
+                    output_buffer_available_wr = 1;
                     next_state = IDLE;
                 end
             end
+
+            // LEFT HERE: add a delay state to load counter with correct value
+            //            or... use last_word in some way
+            //            second one probably better, since it
+            // is more performative. Will require more specific counter though
 
             WRITING: begin
                 if (!output_buffer_empty) begin

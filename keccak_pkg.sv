@@ -14,10 +14,10 @@ package keccak_pkg;
   localparam int CAP_SHAKE256 = STATE_WIDTH - RATE_SHAKE256;
   localparam int CAP_SHAKE128 = STATE_WIDTH - RATE_SHAKE128;
 
-  localparam logic [10:0] RATE_SHAKE256_VEC = logic'(RATE_SHAKE256);
-  localparam logic [10:0] RATE_SHAKE128_VEC = logic'(RATE_SHAKE128);
-  localparam logic [10:0] CAP_SHAKE256_VEC = logic'(CAP_SHAKE256);
-  localparam logic [10:0] CAP_SHAKE128_VEC = logic'(CAP_SHAKE128);
+  localparam logic [10:0] RATE_SHAKE256_VEC = 11'(RATE_SHAKE256);
+  localparam logic [10:0] RATE_SHAKE128_VEC = 11'(RATE_SHAKE128);
+  localparam logic [10:0] CAP_SHAKE256_VEC = 11'(CAP_SHAKE256);
+  localparam logic [10:0] CAP_SHAKE128_VEC = 11'(CAP_SHAKE128);
   localparam logic [1:0] SHAKE256_MODE_VEC = 2'b11;
   localparam logic [1:0] SHAKE128_MODE_VEC = 2'b10;
 

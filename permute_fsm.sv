@@ -91,6 +91,7 @@ module permute_fsm (
 
             // Absorb blocks until either there is no block available, or we reach the last one
             ABSORB: begin
+                // Revise signals driven here
                 // Either round is not done, or it is done and we can go straight to absorbing the next (non last) block
                 if ((!round_done) || (round_done && input_buffer_ready && !last_block_in_input_buffer)) begin
                     next_state = ABSORB;

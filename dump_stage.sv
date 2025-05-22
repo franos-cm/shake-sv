@@ -8,6 +8,7 @@ module dump_stage (
         
     // Inputs from previous stage
     input logic[RATE_SHAKE128-1:0] output_buffer_in,
+    input logic[31:0] output_size_counter,
     input logic[1:0] operation_mode,
     input logic output_buffer_we,
 
@@ -42,6 +43,7 @@ module dump_stage (
         .clk                     (clk),
         .rst                     (rst),
         .output_buffer_in        (output_buffer_in),
+        .output_size_counter     (output_size_counter),
         .operation_mode          (operation_mode),
         .output_buffer_we        (output_buffer_we_internal),
         .output_counter_load     (output_counter_load),

@@ -7,8 +7,10 @@ module dump_datapath (
 
     // Inputs from previous stage
     input logic [RATE_SHAKE128-1:0] output_buffer_in,
+    input logic[31:0] output_size_counter,
     input logic [1:0] operation_mode,
     input logic output_buffer_we,
+    input logic last_output_block,
 
     // Control inputs
     input logic output_counter_load,
@@ -24,16 +26,17 @@ module dump_datapath (
     // ---------- Internal signals declaration ----------
     //
     logic [4:0] max_buffer_depth;
-
+    logic [31 - w_bit_width:0] remaining_valid_words;
+    logic[w_byte_width-1:0] remaining_valid_bytes;
 
 
     // ------------------- Components -------------------
     //
 
-    // Counter for input buffer
+    // Counter for output buffer
     countern #(
         .WIDTH(5)
-    ) input_counter (
+    ) output_counter (
         .clk  (clk),
         .rst (output_counter_rst), // TODO: not sure if needed
         .en (output_buffer_shift_en),
@@ -57,11 +60,16 @@ module dump_datapath (
     // ------------ Combinatorial assignments -----------
     //
     always_comb begin
-        unique case (operation_mode)
-            SHAKE256_MODE_VEC: max_buffer_depth = 5'd17;
-            SHAKE128_MODE_VEC: max_buffer_depth = 5'd21;
-            default: max_buffer_depth = 5'd21;
-        endcase
+        if (last_output_block)
+            max_buffer_depth = remaining_valid_words;
+        else if (operation_mode == SHAKE256_MODE_VEC)
+            max_buffer_depth = 5'd17;
+        else 
+            max_buffer_depth = 5'd21;
     end
+
+    // LEFT HERE: pick right slice
+    assign remaining_valid_words = output_size_counter[31:w_bit_width];
+    assign remaining_valid_bytes = output_size_counter[(w_bit_width-1):3];
 
 endmodule

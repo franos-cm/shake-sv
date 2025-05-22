@@ -12,6 +12,7 @@ module permute_stage (
 
     // Outputs for next stage
     output logic[RATE_SHAKE128-1:0] rate_output,
+    output logic[31:0] output_size_counter,
     output logic output_buffer_we,
     output logic[1:0] operation_mode_out,
 
@@ -63,7 +64,8 @@ module permute_stage (
         .round_count_load     (round_count_load),
         .round_done           (round_done),
         .last_output_block    (last_output_block),
-        .rate_output          (rate_output)
+        .rate_output          (rate_output),
+        .output_size_counter  (output_size_counter)
     );
 
 endmodule

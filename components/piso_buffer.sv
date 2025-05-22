@@ -19,15 +19,18 @@ module piso_buffer #(
         end
         else if (write_enable) begin
             for (int i = 0; i < DEPTH; i++)
-                // TODO: revise if is coherent with piso from reference code
                 buffer_data[i] <= data_in[(DEPTH-i)*(WIDTH)-1 -: WIDTH];
         end
         else if (shift_enable) begin
                 // shift
-                for (int i = 0; i < DEPTH - 1; i++)
-                    buffer_data[i] <= buffer_data[i + 1];
-                buffer_data[DEPTH - 1] <= '0;
+                // for (int i = 0; i < DEPTH - 1; i++)
+                //     buffer_data[i] <= buffer_data[i + 1];
+                // buffer_data[DEPTH - 1] <= '0;
+                for (int i = DEPTH - 1; i > 0; i--)
+                    buffer_data[i] <= buffer_data[i - 1];
+                buffer_data[0] <= '0;
         end
 
-    assign data_out = buffer_data[0];
+    // assign data_out = buffer_data[0];
+    assign data_out = buffer_data[DEPTH - 1];
 endmodule

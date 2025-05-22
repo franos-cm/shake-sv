@@ -22,8 +22,10 @@ module load_datapath (
     //
     logic last_word_in_block;
     logic [4:0] input_buffer_counter;
+    logic [31:0] input_size_counter;
     logic [1:0] operation_mode_reg;
     logic [4:0] max_buffer_depth;
+    logic[w_byte_width-1:0] remaining_valid_bytes;
     logic [w-1:0] padded_data;    // Data after its been padded
     logic [w-1:0] padded_data_le; // Little endian representation
 
@@ -52,15 +54,7 @@ module load_datapath (
         .data_out (output_size)
     );
 
-    // Input counter
-    logic[w_bit_width-1:0] last_word_remainder;
-    logic[w_byte_width-1:0] valid_word_bytes;
-
-    // NOTE doing this in a parametric way possibly makes it more confusing
-    assign valid_word_bytes = last_word_remainder[w_bit_width-1:3];
-    // NOTE: hacky way of subtracting 1 from odd number, but it should simplify synthesis
-    assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
-
+    // Input size counter
     size_counter #(
         .WIDTH(32),
         .w(w)
@@ -72,18 +66,22 @@ module load_datapath (
         .step_size(w),
         .en_count(load_enable),
         .last_word(last_valid_input_word),
-        .last_word_remainder(last_word_remainder)
+        .counter(input_size_counter)
         // The block_size input doesnt really matter here.
         // That is, since we need to account for padding,
         // last_block is driven by the padding generator.
     );
 
     // Padding Generator
+    // NOTE doing this in a parametric way possibly makes it more confusing
+    assign remaining_valid_bytes = input_size_counter[(w_bit_width-1):3];
+    // NOTE: hacky way of subtracting 1 from odd number, but it should simplify synthesis
+    assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
     padding_generator padding_gen (
         .clk (clk),
         .rst (rst),
         .data_in (data_in),
-        .valid_word_bytes(valid_word_bytes),
+        .remaining_valid_bytes(remaining_valid_bytes),
         .padding_enable(padding_enable),
         .last_word_in_block(last_word_in_block),
         .padding_reset(padding_reset),

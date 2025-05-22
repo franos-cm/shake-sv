@@ -20,6 +20,7 @@ module permute_datapath (
     // Signals for next pipeline stage
     output logic round_done,
     output logic last_output_block,
+    output logic[31:0] output_size_counter,
     output logic[1:0] operation_mode_out,
     output logic[RATE_SHAKE128-1:0] rate_output
     
@@ -28,7 +29,8 @@ module permute_datapath (
     //
     logic[1:0] operation_mode;
     logic[1:0] operation_mode_reg;
-    logic[10:0] block_size; 
+    logic[10:0] block_size;
+
 
     logic[STATE_WIDTH-1:0] state_reg_in;
     logic[STATE_WIDTH-1:0] state_reg_out;
@@ -62,9 +64,10 @@ module permute_datapath (
         .en_write(copy_control_regs_en),
         .en_count(output_size_count_en),
         .block_size(block_size),
-        .step_size({'0, block_size}), // TODO: is this conversion fine?
+        .step_size({21'b0, block_size}), // TODO: is this conversion fine?
         .data_in(output_size_in),
-        .last_block(last_output_block)
+        .last_block(last_output_block),
+        .counter(output_size_counter)
     );
 
 
@@ -76,7 +79,7 @@ module permute_datapath (
         .rst (rst),  // TODO: Maybe get a more specific reset?
         .en (round_en),
         .load_max (round_count_load),
-        .max_count(5'd24),    // TODO: Maybe 23?
+        .max_count(5'd23),    // TODO: Maybe 23?
         .counter(round_num),
         .count_end(round_done)
     );
@@ -99,6 +102,7 @@ module permute_datapath (
     );
 
     // Keccak round
+    // TODO: validate values
     keccak_round round(
         .rin(round_in),
         .rc(round_constant),
@@ -111,8 +115,8 @@ module permute_datapath (
     assign xor_mask = (
         absorb_enable
         ? (operation_mode == SHAKE256_MODE_VEC
-            ? {rate_input[RATE_SHAKE256-1 : 0], '0}
-            : {rate_input[RATE_SHAKE128-1 : 0], '0})
+            ? {rate_input[RATE_SHAKE256-1 : 0], {CAP_SHAKE256{1'b0}}}
+            : {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}})
         : '0
     );
     assign round_in = state_reg_out ^ xor_mask;
