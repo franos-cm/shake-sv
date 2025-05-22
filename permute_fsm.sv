@@ -7,12 +7,11 @@ module permute_fsm (
     input  logic output_buffer_available,
     input  logic last_output_block,
 
-    output logic copy_control_regs_en,  // TODO: do I need to copy input size? Probably not, but double check it.
+    output logic copy_control_regs_en,
     output logic absorb_enable,
     output logic round_en,
     output logic round_count_load,
-    output logic output_buffer_we,         // NOTE: this means a previous stage of the pipeline is driving a next stage
-    output logic output_size_count_en,
+    output logic output_buffer_we,
     output logic input_buffer_ready_clr,   // Handshaking signal
     output logic last_block_in_buffer_clr  // Handshaking signal
 );
@@ -38,8 +37,6 @@ module permute_fsm (
         else
             current_state <= next_state;
     end
-
-    assign output_size_count_en = output_buffer_we;
 
     // Next state logic
     always_comb begin

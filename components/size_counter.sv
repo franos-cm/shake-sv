@@ -14,6 +14,7 @@ module size_counter #(
 
     output logic last_word,
     output logic last_block,
+    output logic counter_end,
     output logic [WIDTH-1:0] counter
 );
     logic [WIDTH-1:0] _counter;
@@ -33,6 +34,8 @@ module size_counter #(
 
     assign last_word = (_counter <= w);
     assign last_block = (_counter <= block_size);
+    assign counter_end = (_counter == '0);
+    assign counter = _counter;
 endmodule
 
 

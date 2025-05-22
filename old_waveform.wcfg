@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sha_tb_all_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sha_tb_all" />
+            <top_module name="sha_tb_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="49.200 ns"></ZoomStartTime>
+      <ZoomEndTime time="307.157 ns"></ZoomEndTime>
+      <Cursor1Time time="1,110.418 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="275"></NameColumnWidth>
+      <ValueColumnWidth column_width="186"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group53">
+      <obj_property name="label">IO</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/data_in">
+         <obj_property name="ElementShortName">data_in[63:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in[63:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/valid_in_internal">
+         <obj_property name="ElementShortName">valid_in_internal</obj_property>
+         <obj_property name="ObjectShortName">valid_in_internal</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/ready_out">
+         <obj_property name="ElementShortName">ready_out</obj_property>
+         <obj_property name="ObjectShortName">ready_out</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/data_out">
+         <obj_property name="ElementShortName">data_out[63:0]</obj_property>
+         <obj_property name="ObjectShortName">data_out[63:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/ready_in_internal">
+         <obj_property name="ElementShortName">ready_in_internal</obj_property>
+         <obj_property name="ObjectShortName">ready_in_internal</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/valid_out">
+         <obj_property name="ElementShortName">valid_out</obj_property>
+         <obj_property name="ObjectShortName">valid_out</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group54">
+      <obj_property name="label">FSMs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group59">
+      <obj_property name="label">Load stage</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group60">
+         <obj_property name="label">FSM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/valid_in">
+            <obj_property name="ElementShortName">valid_in</obj_property>
+            <obj_property name="ObjectShortName">valid_in</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/ready_out">
+            <obj_property name="ElementShortName">ready_out</obj_property>
+            <obj_property name="ObjectShortName">ready_out</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/control_regs_enable">
+            <obj_property name="ElementShortName">control_regs_enable</obj_property>
+            <obj_property name="ObjectShortName">control_regs_enable</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/last_input_block">
+            <obj_property name="ElementShortName">last_input_block</obj_property>
+            <obj_property name="ObjectShortName">last_input_block</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/input_buffer_full">
+            <obj_property name="ElementShortName">input_buffer_full</obj_property>
+            <obj_property name="ObjectShortName">input_buffer_full</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/input_buffer_empty">
+            <obj_property name="ElementShortName">input_buffer_empty</obj_property>
+            <obj_property name="ObjectShortName">input_buffer_empty</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_fsm/padding_reset">
+            <obj_property name="ElementShortName">padding_reset</obj_property>
+            <obj_property name="ObjectShortName">padding_reset</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group61">
+         <obj_property name="label">Datapath</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/control_regs_enable">
+            <obj_property name="ElementShortName">control_regs_enable</obj_property>
+            <obj_property name="ObjectShortName">control_regs_enable</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/load_enable">
+            <obj_property name="ElementShortName">load_enable</obj_property>
+            <obj_property name="ObjectShortName">load_enable</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/last_input_block">
+            <obj_property name="ElementShortName">last_input_block</obj_property>
+            <obj_property name="ObjectShortName">last_input_block</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/operation_mode">
+            <obj_property name="ElementShortName">operation_mode[1:0]</obj_property>
+            <obj_property name="ObjectShortName">operation_mode[1:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/max_buffer_depth">
+            <obj_property name="ElementShortName">max_buffer_depth[4:0]</obj_property>
+            <obj_property name="ObjectShortName">max_buffer_depth[4:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/data_in">
+            <obj_property name="ElementShortName">data_in[63:0]</obj_property>
+            <obj_property name="ObjectShortName">data_in[63:0]</obj_property>
+         </wvobject>
+         <wvobject type="group" fp_name="group428">
+            <obj_property name="label">Padding gen</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/data_in">
+               <obj_property name="ElementShortName">data_in[63:0]</obj_property>
+               <obj_property name="ObjectShortName">data_in[63:0]</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/first_pad_word_sel">
+               <obj_property name="ElementShortName">first_pad_word_sel[7:0]</obj_property>
+               <obj_property name="ObjectShortName">first_pad_word_sel[7:0]</obj_property>
+               <obj_property name="Radix">BINARYRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/padding_mask_sel">
+               <obj_property name="ElementShortName">padding_mask_sel[7:0]</obj_property>
+               <obj_property name="ObjectShortName">padding_mask_sel[7:0]</obj_property>
+               <obj_property name="Radix">BINARYRADIX</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/last_word_in_block">
+               <obj_property name="ElementShortName">last_word_in_block</obj_property>
+               <obj_property name="ObjectShortName">last_word_in_block</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/byte_pad">
+               <obj_property name="ElementShortName">byte_pad[7:0][7:0]</obj_property>
+               <obj_property name="ObjectShortName">byte_pad[7:0][7:0]</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/data_out">
+               <obj_property name="ElementShortName">data_out[63:0]</obj_property>
+               <obj_property name="ObjectShortName">data_out[63:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/last_block">
+               <obj_property name="ElementShortName">last_block</obj_property>
+               <obj_property name="ObjectShortName">last_block</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padded_data">
+            <obj_property name="ElementShortName">padded_data[63:0]</obj_property>
+            <obj_property name="ObjectShortName">padded_data[63:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padded_data_le">
+            <obj_property name="ElementShortName">padded_data_le[63:0]</obj_property>
+            <obj_property name="ObjectShortName">padded_data_le[63:0]</obj_property>
+         </wvobject>
+         <wvobject type="group" fp_name="group282">
+            <obj_property name="label">Counter</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_counter/rst">
+               <obj_property name="ElementShortName">rst</obj_property>
+               <obj_property name="ObjectShortName">rst</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_counter/load_max">
+               <obj_property name="ElementShortName">load_max</obj_property>
+               <obj_property name="ObjectShortName">load_max</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_counter/en">
+               <obj_property name="ElementShortName">en</obj_property>
+               <obj_property name="ObjectShortName">en</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer_counter">
+               <obj_property name="ElementShortName">input_buffer_counter[4:0]</obj_property>
+               <obj_property name="ObjectShortName">input_buffer_counter[4:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_counter/count_start">
+               <obj_property name="ElementShortName">count_start</obj_property>
+               <obj_property name="ObjectShortName">count_start</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_counter/count_end">
+               <obj_property name="ElementShortName">count_end</obj_property>
+               <obj_property name="ObjectShortName">count_end</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="group" fp_name="group74">
+            <obj_property name="label">Input size</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/_counter">
+               <obj_property name="ElementShortName">_counter[31:0]</obj_property>
+               <obj_property name="ObjectShortName">_counter[31:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/en_write">
+               <obj_property name="ElementShortName">en_write</obj_property>
+               <obj_property name="ObjectShortName">en_write</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/en_count">
+               <obj_property name="ElementShortName">en_count</obj_property>
+               <obj_property name="ObjectShortName">en_count</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/step_size">
+               <obj_property name="ElementShortName">step_size[31:0]</obj_property>
+               <obj_property name="ObjectShortName">step_size[31:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/last_word">
+               <obj_property name="ElementShortName">last_word</obj_property>
+               <obj_property name="ObjectShortName">last_word</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_size_left/last_word_remainder">
+               <obj_property name="ElementShortName">last_word_remainder[5:0]</obj_property>
+               <obj_property name="ObjectShortName">last_word_remainder[5:0]</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="group" fp_name="group281">
+            <obj_property name="label">Buffer</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer/en">
+               <obj_property name="ElementShortName">en</obj_property>
+               <obj_property name="ObjectShortName">en</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer/rst">
+               <obj_property name="ElementShortName">rst</obj_property>
+               <obj_property name="ObjectShortName">rst</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer/data_in">
+               <obj_property name="ElementShortName">data_in[63:0]</obj_property>
+               <obj_property name="ObjectShortName">data_in[63:0]</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer/buffer_data">
+               <obj_property name="ElementShortName">buffer_data[20:0][63:0]</obj_property>
+               <obj_property name="ObjectShortName">buffer_data[20:0][63:0]</obj_property>
+               <obj_property name="isExpanded"></obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="group" fp_name="group81">
+            <obj_property name="label">Padding</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/last_block">
+               <obj_property name="ElementShortName">last_block</obj_property>
+               <obj_property name="ObjectShortName">last_block</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/data_out">
+               <obj_property name="ElementShortName">data_out[63:0]</obj_property>
+               <obj_property name="ObjectShortName">data_out[63:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/last_block">
+               <obj_property name="ElementShortName">last_block</obj_property>
+               <obj_property name="ObjectShortName">last_block</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/padding_gen/first_pad_used">
+               <obj_property name="ElementShortName">first_pad_used</obj_property>
+               <obj_property name="ObjectShortName">first_pad_used</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/load_pipeline_stage/load_stage_datapath/input_buffer_out">
+         <obj_property name="ElementShortName">input_buffer_out[1343:0]</obj_property>
+         <obj_property name="ObjectShortName">input_buffer_out[1343:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group619">
+      <obj_property name="label">Permute stage</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/operation_mode_in">
+         <obj_property name="ElementShortName">operation_mode_in[1:0]</obj_property>
+         <obj_property name="ObjectShortName">operation_mode_in[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/rate_input">
+         <obj_property name="ElementShortName">rate_input[1343:0]</obj_property>
+         <obj_property name="ObjectShortName">rate_input[1343:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/input_buffer_ready">
+         <obj_property name="ElementShortName">input_buffer_ready</obj_property>
+         <obj_property name="ObjectShortName">input_buffer_ready</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/last_block_in_buffer">
+         <obj_property name="ElementShortName">last_block_in_buffer</obj_property>
+         <obj_property name="ObjectShortName">last_block_in_buffer</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group635">
+         <obj_property name="label">FSM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/copy_control_regs_en">
+            <obj_property name="ElementShortName">copy_control_regs_en</obj_property>
+            <obj_property name="ObjectShortName">copy_control_regs_en</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/absorb_enable">
+            <obj_property name="ElementShortName">absorb_enable</obj_property>
+            <obj_property name="ObjectShortName">absorb_enable</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/round_en">
+            <obj_property name="ElementShortName">round_en</obj_property>
+            <obj_property name="ObjectShortName">round_en</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/round_count_load">
+            <obj_property name="ElementShortName">round_count_load</obj_property>
+            <obj_property name="ObjectShortName">round_count_load</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/output_buffer_we">
+            <obj_property name="ElementShortName">output_buffer_we</obj_property>
+            <obj_property name="ObjectShortName">output_buffer_we</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/output_size_count_en">
+            <obj_property name="ElementShortName">output_size_count_en</obj_property>
+            <obj_property name="ObjectShortName">output_size_count_en</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/input_buffer_ready_clr">
+            <obj_property name="ElementShortName">input_buffer_ready_clr</obj_property>
+            <obj_property name="ObjectShortName">input_buffer_ready_clr</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_fsm/last_block_in_buffer_clr">
+            <obj_property name="ElementShortName">last_block_in_buffer_clr</obj_property>
+            <obj_property name="ObjectShortName">last_block_in_buffer_clr</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group644">
+         <obj_property name="label">Datapath</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/operation_mode_out">
+            <obj_property name="ElementShortName">operation_mode_out[1:0]</obj_property>
+            <obj_property name="ObjectShortName">operation_mode_out[1:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/operation_mode">
+            <obj_property name="ElementShortName">operation_mode[1:0]</obj_property>
+            <obj_property name="ObjectShortName">operation_mode[1:0]</obj_property>
+            <obj_property name="Radix">BINARYRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/block_size">
+            <obj_property name="ElementShortName">block_size[10:0]</obj_property>
+            <obj_property name="ObjectShortName">block_size[10:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_en">
+            <obj_property name="ElementShortName">round_en</obj_property>
+            <obj_property name="ObjectShortName">round_en</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_num">
+            <obj_property name="ElementShortName">round_num[4:0]</obj_property>
+            <obj_property name="ObjectShortName">round_num[4:0]</obj_property>
+            <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         </wvobject>
+         <wvobject type="group" fp_name="group12159">
+            <obj_property name="label">Permute</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_in">
+               <obj_property name="ElementShortName">round_in[1599:0]</obj_property>
+               <obj_property name="ObjectShortName">round_in[1599:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_constant">
+               <obj_property name="ElementShortName">round_constant[63:0]</obj_property>
+               <obj_property name="ObjectShortName">round_constant[63:0]</obj_property>
+               <obj_property name="Radix">HEXRADIX</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/state_reg_in">
+               <obj_property name="ElementShortName">state_reg_in[1599:0]</obj_property>
+               <obj_property name="ObjectShortName">state_reg_in[1599:0]</obj_property>
+               <obj_property name="CustomSignalColor">#FF0080</obj_property>
+               <obj_property name="UseCustomSignalColor">true</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/state_reg_out">
+               <obj_property name="ElementShortName">state_reg_out[1599:0]</obj_property>
+               <obj_property name="ObjectShortName">state_reg_out[1599:0]</obj_property>
+               <obj_property name="CustomSignalColor">#FFA500</obj_property>
+               <obj_property name="UseCustomSignalColor">true</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/xor_mask">
+               <obj_property name="ElementShortName">xor_mask[1599:0]</obj_property>
+               <obj_property name="ObjectShortName">xor_mask[1599:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="group" fp_name="group2212">
+            <obj_property name="label">Counter</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_counter/max_count">
+               <obj_property name="ElementShortName">max_count[4:0]</obj_property>
+               <obj_property name="ObjectShortName">max_count[4:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_counter/en">
+               <obj_property name="ElementShortName">en</obj_property>
+               <obj_property name="ObjectShortName">en</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_counter/load_max">
+               <obj_property name="ElementShortName">load_max</obj_property>
+               <obj_property name="ObjectShortName">load_max</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_counter/counter">
+               <obj_property name="ElementShortName">counter[4:0]</obj_property>
+               <obj_property name="ObjectShortName">counter[4:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/round_counter/count_end">
+               <obj_property name="ElementShortName">count_end</obj_property>
+               <obj_property name="ObjectShortName">count_end</obj_property>
+            </wvobject>
+         </wvobject>
+         <wvobject type="group" fp_name="group12408">
+            <obj_property name="label">Output size</obj_property>
+            <obj_property name="DisplayName">label</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/rst">
+               <obj_property name="ElementShortName">rst</obj_property>
+               <obj_property name="ObjectShortName">rst</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/data_in">
+               <obj_property name="ElementShortName">data_in[31:0]</obj_property>
+               <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/_counter">
+               <obj_property name="ElementShortName">_counter[31:0]</obj_property>
+               <obj_property name="ObjectShortName">_counter[31:0]</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/en_write">
+               <obj_property name="ElementShortName">en_write</obj_property>
+               <obj_property name="ObjectShortName">en_write</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/step_size">
+               <obj_property name="ElementShortName">step_size[31:0]</obj_property>
+               <obj_property name="ObjectShortName">step_size[31:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/en_count">
+               <obj_property name="ElementShortName">en_count</obj_property>
+               <obj_property name="ObjectShortName">en_count</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/block_size">
+               <obj_property name="ElementShortName">block_size[10:0]</obj_property>
+               <obj_property name="ObjectShortName">block_size[10:0]</obj_property>
+               <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/last_word">
+               <obj_property name="ElementShortName">last_word</obj_property>
+               <obj_property name="ObjectShortName">last_word</obj_property>
+            </wvobject>
+            <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/last_block">
+               <obj_property name="ElementShortName">last_block</obj_property>
+               <obj_property name="ObjectShortName">last_block</obj_property>
+            </wvobject>
+            <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/permute_stage_datapath/output_size_left/last_word_remainder">
+               <obj_property name="ElementShortName">last_word_remainder[5:0]</obj_property>
+               <obj_property name="ObjectShortName">last_word_remainder[5:0]</obj_property>
+            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/rate_output">
+         <obj_property name="ElementShortName">rate_output[1343:0]</obj_property>
+         <obj_property name="ObjectShortName">rate_output[1343:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/permute_pipeline_stage/output_buffer_we">
+         <obj_property name="ElementShortName">output_buffer_we</obj_property>
+         <obj_property name="ObjectShortName">output_buffer_we</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group8687">
+      <obj_property name="label">Dump stage</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_fsm/current_state">
+         <obj_property name="ElementShortName">current_state[5:0]</obj_property>
+         <obj_property name="ObjectShortName">current_state[5:0]</obj_property>
+         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/output_buffer_in">
+         <obj_property name="ElementShortName">output_buffer_in[1343:0]</obj_property>
+         <obj_property name="ObjectShortName">output_buffer_in[1343:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/output_buffer_we">
+         <obj_property name="ElementShortName">output_buffer_we</obj_property>
+         <obj_property name="ObjectShortName">output_buffer_we</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group10488">
+         <obj_property name="label">Output buffer</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_datapath/output_buffer/write_enable">
+            <obj_property name="ElementShortName">write_enable</obj_property>
+            <obj_property name="ObjectShortName">write_enable</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_datapath/output_buffer/shift_enable">
+            <obj_property name="ElementShortName">shift_enable</obj_property>
+            <obj_property name="ObjectShortName">shift_enable</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_datapath/output_buffer/data_in">
+            <obj_property name="ElementShortName">data_in[1343:0]</obj_property>
+            <obj_property name="ObjectShortName">data_in[1343:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_datapath/output_buffer/buffer_data">
+            <obj_property name="ElementShortName">buffer_data[20:0][63:0]</obj_property>
+            <obj_property name="ObjectShortName">buffer_data[20:0][63:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/dump_stage_datapath/output_buffer/data_out">
+            <obj_property name="ElementShortName">data_out[63:0]</obj_property>
+            <obj_property name="ObjectShortName">data_out[63:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject type="array" fp_name="/sha_tb_all/one_clk_gen/abc/abc/dump_pipeline_stage/data_out">
+         <obj_property name="ElementShortName">data_out[63:0]</obj_property>
+         <obj_property name="ObjectShortName">data_out[63:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group621">
+      <obj_property name="label">Handshaking</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="group" fp_name="group2113">
+         <obj_property name="label">Last input block</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/last_block_in_buffer_latch/rst">
+            <obj_property name="ElementShortName">rst</obj_property>
+            <obj_property name="ObjectShortName">rst</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/last_block_in_buffer_latch/set">
+            <obj_property name="ElementShortName">set</obj_property>
+            <obj_property name="ObjectShortName">set</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/last_block_in_buffer_latch/q">
+            <obj_property name="ElementShortName">q</obj_property>
+            <obj_property name="ObjectShortName">q</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject type="group" fp_name="group626">
+         <obj_property name="label">Input buffer ready</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/input_buffer_ready_latch/rst">
+            <obj_property name="ElementShortName">rst</obj_property>
+            <obj_property name="ObjectShortName">rst</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/input_buffer_ready_latch/set">
+            <obj_property name="ElementShortName">set</obj_property>
+            <obj_property name="ObjectShortName">set</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/sha_tb_all/one_clk_gen/abc/abc/input_buffer_ready_latch/q">
+            <obj_property name="ElementShortName">q</obj_property>
+            <obj_property name="ObjectShortName">q</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+</wave_config>
