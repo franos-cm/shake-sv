@@ -51,6 +51,7 @@ module keccak (
         .input_buffer_out        (rate_input),
         .output_size             (output_size),
         .operation_mode          (operation_mode),
+        .input_buffer_ready      (input_buffer_ready),
         .input_buffer_ready_wr   (input_buffer_ready_wr),
         .last_block_in_buffer_wr (last_block_in_buffer_wr),
         .ready_out               (ready_out)

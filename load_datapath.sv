@@ -8,10 +8,12 @@ module load_datapath (
     input  logic control_regs_enable,
     input  logic padding_enable,
     input  logic padding_reset,
+    input  logic input_counter_en,
+    input  logic input_counter_load,
     input  logic[w-1:0] data_in,
 
     output logic last_valid_input_word,
-    output logic input_buffer_empty,
+    output logic input_size_reached,
     output logic input_buffer_full,
     output logic last_input_block,
     output logic[RATE_SHAKE128-1:0] input_buffer_out,
@@ -66,6 +68,7 @@ module load_datapath (
         .step_size(w),
         .en_count(load_enable),
         .last_word(last_valid_input_word),
+        .counter_end(input_size_reached),
         .counter(input_size_counter)
         // The block_size input doesnt really matter here.
         // That is, since we need to account for padding,
@@ -96,10 +99,9 @@ module load_datapath (
     ) input_counter (
         .clk  (clk),
         .rst (rst),
-        .en (load_enable),
-        .load_max (control_regs_enable),
+        .en (input_counter_en),
+        .load_max (input_counter_load),
         .max_count (max_buffer_depth),
-        .count_start(input_buffer_empty),
         .count_end (input_buffer_full),
         .counter(input_buffer_counter)
     );
@@ -131,7 +133,7 @@ module load_datapath (
     end
     // Kind of a hack: enable passthrough so we can get the
     // correct value of operation mode
-    assign operation_mode = control_regs_enable ? data_in[62:61] : operation_mode_reg;
+    assign operation_mode = operation_mode_reg; // TODO: if this assignment is correct, delete operation_mode_reg
     // Input transformations
     assign padded_data_le = EndianSwitcher#(w)::switch(padded_data);
 

@@ -2,16 +2,19 @@ module load_fsm (
     input  logic clk,
     input  logic rst,
     input  logic valid_in,
-    input  logic input_buffer_empty,
     input  logic input_buffer_full,
+    input  logic input_buffer_ready,
     input  logic last_input_block,
     input  logic last_valid_input_word,
+    input  logic input_size_reached,
 
     output logic ready_out,
     output logic load_enable,
     output logic control_regs_enable,
     output logic padding_reset,
     output logic padding_enable,
+    output logic input_counter_en,
+    output logic input_counter_load,
     output logic input_buffer_ready_wr, // Handshaking signal
     output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
 );
@@ -21,7 +24,8 @@ module load_fsm (
         RESET,
         WAIT_HEADER,
         WAIT_LOAD,
-        LOAD
+        LOAD,
+        WAIT_BUFFER_EMPTY
     } state_t;
 
     state_t current_state, next_state;
@@ -48,6 +52,8 @@ module load_fsm (
         control_regs_enable    = 0;
         padding_enable         = 0;
         padding_reset          = 0;
+        input_counter_en       = 0;
+        input_counter_load     = 0;
 
         unique case (current_state)
             // Initial state for resetting
@@ -70,22 +76,29 @@ module load_fsm (
 
             // Waits so sipo buffer is available to be loaded
             WAIT_LOAD: begin
-                next_state = input_buffer_empty ? LOAD : WAIT_LOAD;
+                next_state = input_buffer_ready ? WAIT_LOAD : LOAD;
+                input_counter_load = 1;
             end
 
             //  When it is available, load sipo according to valid_in
             LOAD: begin
-                padding_enable = last_valid_input_word;
+                padding_enable = last_valid_input_word; // NOTE: this needs to be here, cant be purely input combinatorial
                 if (!input_buffer_full) begin
                     load_enable = valid_in || padding_enable;
-                    ready_out = valid_in;
+                    input_counter_en = load_enable;
+                    ready_out = valid_in && !input_size_reached;
                     next_state = LOAD;
                 end
                 else begin
                     input_buffer_ready_wr = 1; // Signal to next pipeline state that buffer is ready
+                    input_counter_en = 1;      // NOTE: we do this to reset the input counter
                     padding_reset = last_input_block;
-                    next_state = last_input_block ? WAIT_HEADER : WAIT_LOAD;
+                    next_state = last_input_block ? WAIT_BUFFER_EMPTY : WAIT_LOAD;
                 end
+            end
+
+            WAIT_BUFFER_EMPTY: begin
+                next_state = input_buffer_ready ? WAIT_BUFFER_EMPTY : WAIT_HEADER;
             end
 
             default: next_state = RESET;

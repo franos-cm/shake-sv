@@ -42,7 +42,8 @@ module padding_generator (
     assign first_pad_word_sel = (padding_enable && !first_pad_used) ? (8'b1000_0000 >> remaining_valid_bytes) : '0;
     assign padding_mask_sel = padding_enable ? (8'hFF >> remaining_valid_bytes) : '0;
     // Decide when the first_pad has been applied
-    assign first_pad_used_set = padding_enable && (remaining_valid_bytes != '0);
+    // TODO: double check this, especially conversion
+    assign first_pad_used_set = padding_enable && (remaining_valid_bytes != w_byte_size);
     assign last_block = first_pad_used;
 
     always_comb begin
