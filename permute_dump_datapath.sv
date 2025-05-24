@@ -16,6 +16,7 @@ module permute_dump_datapath (
     input  logic absorb_enable,
     input  logic round_en,
     input  logic round_count_load,
+    input  logic state_reset,
 
     input  logic output_buffer_we,
     input  logic output_buffer_shift_en,
@@ -29,8 +30,11 @@ module permute_dump_datapath (
     output logic output_size_reached,
 
     // External outputs
-    output logic[w-1:0] data_out
-    
+    output logic[w-1:0] data_out,
+
+
+    // TODO: delete this when we separate the stages
+    input logic last_output_block_dump
 );
     // ---------- Internal signals declaration ----------
     //
@@ -50,6 +54,7 @@ module permute_dump_datapath (
     logic[31:0] size_step;
     logic [4:0] max_buffer_depth;
     logic[w_byte_width-1:0] remaining_valid_bytes;
+    logic [31 - w_bit_width:0] remaining_valid_words;
     logic output_size_count_en;
 
 
@@ -92,7 +97,7 @@ module permute_dump_datapath (
         .WIDTH(STATE_WIDTH)
     ) state_reg (
         .clk  (clk),
-        .rst (rst),
+        .rst (state_reset || rst),
         .en (round_en),
         .data_in (state_reg_in),
         .data_out (state_reg_out)
@@ -108,8 +113,8 @@ module permute_dump_datapath (
     // ---------------- Dump Components ------------------
     //
     // Output size counter, coming from previous stage
-    // TODO: check if this works
-    assign output_size_count_en = (output_buffer_we && !last_output_block) || output_buffer_shift_en;
+    // TODO: if its like this, delete output_size_count_en
+    assign output_size_count_en = (output_buffer_we);
     size_counter #(
         .WIDTH(32),
         .w(w)
@@ -153,13 +158,17 @@ module permute_dump_datapath (
     // ------- Permute Combinatorial assignments ---------
     //
     // Enables absorption of input by the keccak round
-    assign xor_mask = (
-        absorb_enable
-        ? (operation_mode == SHAKE256_MODE_VEC
-            ? {rate_input[RATE_SHAKE256-1 : 0], {CAP_SHAKE256{1'b0}}}
-            : {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}})
-        : '0
-    );
+    always_comb begin
+        if (!absorb_enable)
+            xor_mask = '0;
+        else if (operation_mode == SHAKE256_MODE_VEC)
+            xor_mask = {rate_input[RATE_SHAKE256-1 : 0], {CAP_SHAKE256{1'b0}}};
+        else if (operation_mode == SHAKE128_MODE_VEC)
+            xor_mask = {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}};
+        else
+            xor_mask = '0;
+
+    end
     assign round_in = state_reg_out ^ xor_mask;
     
     // Decide block size based on current operation mode
@@ -181,15 +190,20 @@ module permute_dump_datapath (
 
     // --------- Dump Combinatorial assignments -----------
     //
+
+    assign size_step = {21'b0, block_size}; // TODO: if this works, delete size_step
+
     always_comb begin
-        unique case (operation_mode)
-            SHAKE256_MODE_VEC: max_buffer_depth = 5'd17;
-            SHAKE128_MODE_VEC: max_buffer_depth = 5'd21;
-            default: max_buffer_depth = 5'd21;
-        endcase
+        // TODO: check if last_output_block_dump needs to be regged into DUMP stage or not
+        if (last_output_block_dump)
+            max_buffer_depth = remaining_valid_words[4:0];
+        else if (operation_mode == SHAKE256_MODE_VEC)
+            max_buffer_depth = 5'd17;
+        else 
+            max_buffer_depth = 5'd21;
     end
 
-    assign size_step = last_output_block ? w : {21'b0, block_size}; // TODO: does this assignment work?
+    assign remaining_valid_words = output_size_counter[31:w_bit_width];
     // Use this for masking output?
     assign remaining_valid_bytes = output_size_counter[(w_bit_width-1):3];
 

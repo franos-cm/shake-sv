@@ -15,7 +15,8 @@ module dump_fsm (
     output logic valid_out,
 
     // Handshaking
-    output logic output_buffer_available_wr
+    output logic output_buffer_available_wr,
+    output logic last_output_block_clr
 );
 
     logic data_still_in_buffer;
@@ -36,7 +37,7 @@ module dump_fsm (
             current_state <= next_state;
     end
 
-    assign data_still_in_buffer = (!output_buffer_empty) && (!output_size_reached);
+    assign data_still_in_buffer = (!output_buffer_empty);
 
     // Next state logic
     always_comb begin
@@ -45,6 +46,7 @@ module dump_fsm (
         output_buffer_shift_en     = 0;
         output_buffer_available_wr = 0;
         valid_out                  = 0;
+        last_output_block_clr      = 0;
 
         unique case (current_state)
             // Initial state
@@ -60,11 +62,6 @@ module dump_fsm (
                 end
             end
 
-            // LEFT HERE: add a delay state to load counter with correct value
-            //            or... use last_word in some way
-            //            second one probably better, since it
-            // is more performative. Will require more specific counter though
-
             WRITING: begin
                 if (data_still_in_buffer) begin
                     valid_out = 1;
@@ -73,7 +70,7 @@ module dump_fsm (
                 end
                 else begin
                     output_buffer_available_wr = 1;
-                    output_counter_rst = 1; // TODO: possibly unnecessary
+                    last_output_block_clr = 1;
                     next_state = IDLE;
                 end
             end

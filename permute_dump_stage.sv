@@ -1,5 +1,6 @@
 import keccak_pkg::*;
 
+// TODO: divide these in two stages
 module permute_dump_stage (
     // External inputs
     input  logic clk,
@@ -35,6 +36,13 @@ module permute_dump_stage (
     logic output_buffer_available;
     logic output_buffer_available_wr;
 
+    logic output_counter_load;
+    logic output_buffer_shift_en;
+    logic last_output_block_reg;
+    logic last_output_block_wr;
+    logic last_output_block_clr;
+    logic state_reset;
+
 
     permute_fsm permute_stage_fsm (
         .clk                        (clk),
@@ -50,7 +58,9 @@ module permute_dump_stage (
         .round_en                   (round_en),
         .output_buffer_we           (output_buffer_we),
         .input_buffer_ready_clr     (input_buffer_ready_clr),
-        .last_block_in_buffer_clr   (last_block_in_buffer_clr)
+        .last_block_in_buffer_clr   (last_block_in_buffer_clr),
+        .last_output_block_wr       (last_output_block_wr),
+        .state_reset                (state_reset)
     );
 
     // Signaling between second and third stage
@@ -61,17 +71,26 @@ module permute_dump_stage (
         .q   (output_buffer_available)
     );
 
+    // Signaling between second and third stage
+    latch last_output_block_latch (
+        .clk (clk),
+        .set (last_output_block_wr),
+        .rst (last_output_block_clr || rst),
+        .q   (last_output_block_reg)
+    );
+
     dump_fsm dump_stage_fsm (
         .clk                         (clk),
         .rst                         (rst),
         .ready_in                    (ready_in),
-        .output_buffer_we            (output_buffer_we), // TODO: use latch signal?
+        .output_buffer_we            (output_buffer_we),
         .output_buffer_empty         (output_buffer_empty),
         .output_size_reached         (output_size_reached),
         .output_counter_load         (output_counter_load),
         .output_counter_rst          (output_counter_rst),
         .output_buffer_shift_en      (output_buffer_shift_en),
         .output_buffer_available_wr  (output_buffer_available_wr),
+        .last_output_block_clr       (last_output_block_clr),
         .valid_out                   (valid_out)
     );
 
@@ -93,7 +112,10 @@ module permute_dump_stage (
         .output_counter_load     (output_counter_load),
         .output_counter_rst      (output_counter_rst),
         .output_buffer_empty     (output_buffer_empty),
-        .data_out                (data_out)
+        .data_out                (data_out),
+        .state_reset             (state_reset),
+
+        .last_output_block_dump  (last_output_block_reg)
     );
 
 endmodule

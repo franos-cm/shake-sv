@@ -12,8 +12,10 @@ module permute_fsm (
     output logic round_en,
     output logic round_count_load,
     output logic output_buffer_we,
+    output logic state_reset,
     output logic input_buffer_ready_clr,   // Handshaking signal
-    output logic last_block_in_buffer_clr  // Handshaking signal
+    output logic last_block_in_buffer_clr, // Handshaking signal
+    output logic last_output_block_wr      // Handshaking signal
 );
 
     // Define states using enum
@@ -38,6 +40,8 @@ module permute_fsm (
             current_state <= next_state;
     end
 
+    assign last_output_block_wr  = last_output_block;
+
     // Next state logic
     always_comb begin
         absorb_enable            = 0;
@@ -47,26 +51,29 @@ module permute_fsm (
         last_block_in_buffer_clr = 0;
         copy_control_regs_en     = 0;
         round_count_load         = 0;
+        state_reset              = 0;
 
         unique case (current_state)
             // Initial state for resetting
             RESET: begin
                 next_state = WAIT_FIRST_ABSORB;
-                round_count_load = 1; // TODO: not sure this will work
+                round_count_load = 1;
                 // TODO: drive a universal reset here
+                state_reset = 1;
             end
 
             // Wait until first pipeline stage stays buffer is ready for the first time
             WAIT_FIRST_ABSORB: begin
                 if (!input_buffer_ready) begin
                     next_state = WAIT_FIRST_ABSORB;
+                    copy_control_regs_en = 1;
                 end
                 else begin
                     absorb_enable = 1;
                     round_en = 1;
-                    copy_control_regs_en = 1;
                     input_buffer_ready_clr = 1;
                     next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
+                    last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
             end
 
@@ -82,6 +89,7 @@ module permute_fsm (
                     round_en = 1;
                     input_buffer_ready_clr = 1;
                     next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
+                    last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
             end
 
@@ -98,6 +106,7 @@ module permute_fsm (
                 // Or, if round is done, and the last block is waiting to be absorbed, we change states
                 else if (round_done && input_buffer_ready && last_block_in_input_buffer) begin
                     next_state = ABSORB_LAST;
+                    last_block_in_buffer_clr = 1;
                     absorb_enable = 1;
                     round_en = 1; // We do this so the round_counter resets
                 end
@@ -111,7 +120,6 @@ module permute_fsm (
             // Absorbs last block
             ABSORB_LAST: begin
                 round_en = 1;
-                last_block_in_buffer_clr = 1;
                 next_state = round_done ? DUMP : ABSORB_LAST;
             end
 
@@ -121,7 +129,7 @@ module permute_fsm (
 
                 // This will only happen in the first DUMP cycle, where out buffer is ready by definition,
                 // or in subsequent DUMP cycles, where WAIT_DUMP guarantees out buffer is ready.
-                // As such, we dont need to check for (is_ready)
+                // As such, we dont need to check for (output_buffer_available)
                 if (!last_output_block) begin
                     next_state = SQUEEZE;
                 end
@@ -129,6 +137,8 @@ module permute_fsm (
                     // Trying to get rid of that last state by cycling in DUMP
                     // TODO: more complex transitions if last_output_block, straight to ABSORB or ABSORB_LAST
                     next_state = output_buffer_available ? WAIT_FIRST_ABSORB : DUMP;
+                    state_reset = output_buffer_available;
+                    copy_control_regs_en = output_buffer_available;
                 end
             end
 
