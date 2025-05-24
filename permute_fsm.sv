@@ -66,9 +66,9 @@ module permute_fsm (
             WAIT_FIRST_ABSORB: begin
                 if (!input_buffer_ready) begin
                     next_state = WAIT_FIRST_ABSORB;
-                    copy_control_regs_en = 1;
                 end
                 else begin
+                    copy_control_regs_en = 1;
                     absorb_enable = 1;
                     round_en = 1;
                     input_buffer_ready_clr = 1;

@@ -182,7 +182,7 @@ module permute_dump_datapath (
 
     // Kind of a hack: enable passthrough so we can get the
     // correct value of operation mode in the first absorb
-    assign operation_mode = operation_mode_reg; // TODO: if this assignment is correct, delete operation_mode_reg
+    assign operation_mode = copy_control_regs_en ? operation_mode_in : operation_mode_reg;
     
     // Permute output assignment
     assign rate_output = EndianSwitcher#(RATE_SHAKE128)::switch(state_reg_out[STATE_WIDTH-1 -: RATE_SHAKE128]);
