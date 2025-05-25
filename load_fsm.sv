@@ -5,7 +5,7 @@ module load_fsm (
     input  logic input_buffer_full,
     input  logic input_buffer_ready,
     input  logic last_input_block,
-    input  logic last_valid_input_word,
+    input  logic first_incomplete_input_word,
     input  logic input_size_reached,
 
     output logic ready_out,
@@ -82,7 +82,7 @@ module load_fsm (
 
             //  When it is available, load sipo according to valid_in
             LOAD: begin
-                padding_enable = last_valid_input_word; // NOTE: this needs to be here, cant be purely input combinatorial
+                padding_enable = first_incomplete_input_word; // NOTE: this needs to be here, cant be purely input combinatorial
                 if (!input_buffer_full) begin
                     load_enable = valid_in || padding_enable;
                     input_counter_en = load_enable;

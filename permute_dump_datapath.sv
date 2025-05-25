@@ -53,7 +53,7 @@ module permute_dump_datapath (
     logic[31:0] output_size_counter;
     logic[31:0] size_step;
     logic [4:0] max_buffer_depth;
-    logic[w_byte_width-1:0] remaining_valid_bytes;
+    logic[w_byte_width:0] remaining_valid_bytes;  // goes from 0 to 8
     logic [31 - w_bit_width:0] remaining_valid_words;
     logic output_size_count_en;
 
@@ -205,6 +205,6 @@ module permute_dump_datapath (
 
     assign remaining_valid_words = output_size_counter[31:w_bit_width];
     // Use this for masking output?
-    assign remaining_valid_bytes = output_size_counter[(w_bit_width-1):3];
+    assign remaining_valid_bytes = output_size_counter[w_bit_width:3];
 
 endmodule

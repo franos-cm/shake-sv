@@ -12,7 +12,7 @@ module load_datapath (
     input  logic input_counter_load,
     input  logic[w-1:0] data_in,
 
-    output logic last_valid_input_word,
+    output logic first_incomplete_input_word,
     output logic input_size_reached,
     output logic input_buffer_full,
     output logic last_input_block,
@@ -27,7 +27,8 @@ module load_datapath (
     logic [31:0] input_size_counter;
     logic [1:0] operation_mode_reg;
     logic [4:0] max_buffer_depth;
-    logic[w_byte_width-1:0] remaining_valid_bytes;
+    logic[w_byte_width:0] remaining_valid_bytes; // goes from 0 to 8
+    logic last_input_word;
     logic [w-1:0] padded_data;    // Data after its been padded
     logic [w-1:0] padded_data_le; // Little endian representation
 
@@ -67,7 +68,7 @@ module load_datapath (
         .en_write(control_regs_enable),
         .step_size(w),
         .en_count(load_enable),
-        .last_word(last_valid_input_word),
+        .last_word(last_input_word),
         .counter_end(input_size_reached),
         .counter(input_size_counter)
         // The block_size input doesnt really matter here.
@@ -77,8 +78,10 @@ module load_datapath (
 
     // Padding Generator
     // NOTE doing this in a parametric way possibly makes it more confusing
-    assign remaining_valid_bytes = input_size_counter[(w_bit_width-1):3];
+    assign remaining_valid_bytes = input_size_counter[w_bit_width:3];
+    assign first_incomplete_input_word = last_input_word && (remaining_valid_bytes != w_byte_size);
     // NOTE: hacky way of subtracting 1 from odd number, but it should simplify synthesis
+    // TODO: is this comparison fine?
     assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
     padding_generator padding_gen (
         .clk (clk),

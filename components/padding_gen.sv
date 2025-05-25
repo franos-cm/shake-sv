@@ -5,7 +5,7 @@ module padding_generator (
     input  logic  rst,
 
     input logic[w-1:0] data_in,
-    input logic [w_byte_width-1:0] remaining_valid_bytes, // How many of the input bytes are valid
+    input logic [w_byte_width:0] remaining_valid_bytes, // How many of the input bytes are valid
     input logic padding_enable,     // Flag if padding is already needed
     input logic last_word_in_block, // Flag if current word is last of block
     input logic padding_reset,      // Flag to reset padding latches
@@ -43,7 +43,7 @@ module padding_generator (
     assign padding_mask_sel = padding_enable ? (8'hFF >> remaining_valid_bytes) : '0;
     // Decide when the first_pad has been applied
     // TODO: double check this, especially conversion
-    assign first_pad_used_set = padding_enable && (remaining_valid_bytes != w_byte_size);
+    assign first_pad_used_set = padding_enable;
     assign last_block = first_pad_used;
 
     always_comb begin

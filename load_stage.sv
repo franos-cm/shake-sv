@@ -21,7 +21,7 @@ module load_stage (
     output  logic ready_out
 );
     logic input_buffer_full;
-    logic last_valid_input_word;
+    logic first_incomplete_input_word;
     logic input_size_reached;
     logic last_input_block;
     logic load_enable;
@@ -37,7 +37,7 @@ module load_stage (
         .valid_in                (valid_in),
         .input_buffer_ready      (input_buffer_ready),
         .input_buffer_full       (input_buffer_full),
-        .last_valid_input_word   (last_valid_input_word),
+        .first_incomplete_input_word   (first_incomplete_input_word),
         .last_input_block        (last_input_block),
         .input_size_reached      (input_size_reached),
         .ready_out               (ready_out),
@@ -59,7 +59,7 @@ module load_stage (
         .control_regs_enable     (control_regs_enable),
         .input_buffer_full       (input_buffer_full),
         .input_size_reached      (input_size_reached),
-        .last_valid_input_word   (last_valid_input_word),
+        .first_incomplete_input_word   (first_incomplete_input_word),
         .last_input_block        (last_input_block),
         .input_buffer_out        (input_buffer_out),
         .output_size             (output_size),
