@@ -39,10 +39,16 @@ module permute_dump_stage (
 
     logic output_counter_load;
     logic output_buffer_shift_en;
+    logic state_reset;
+
+    // TODO: Get rid of these when we divide this into two stages
     logic last_output_block_reg;
+    logic last_output_block_dump;
     logic last_output_block_wr;
     logic last_output_block_clr;
-    logic state_reset;
+
+    logic valid_bytes_enable;
+    logic valid_bytes_reset;
 
 
     permute_fsm permute_stage_fsm (
@@ -88,11 +94,15 @@ module permute_dump_stage (
         .output_buffer_we            (output_buffer_we),
         .output_buffer_empty         (output_buffer_empty),
         .output_size_reached         (output_size_reached),
+        .last_output_block_in        (last_output_block_reg),
         .output_counter_load         (output_counter_load),
         .output_counter_rst          (output_counter_rst),
         .output_buffer_shift_en      (output_buffer_shift_en),
         .output_buffer_available_wr  (output_buffer_available_wr),
         .last_output_block_clr       (last_output_block_clr),
+        .valid_bytes_reset           (valid_bytes_reset),
+        .valid_bytes_enable          (valid_bytes_enable),
+        .last_output_block           (last_output_block_dump),
         .valid_out                   (valid_out)
     );
 
@@ -117,8 +127,10 @@ module permute_dump_stage (
         .output_buffer_empty     (output_buffer_empty),
         .data_out                (data_out),
         .state_reset             (state_reset),
+        .valid_bytes_reset       (valid_bytes_reset),
+        .valid_bytes_enable      (valid_bytes_enable),
 
-        .last_output_block_dump  (last_output_block_reg)
+        .last_output_block_dump  (last_output_block_dump)
     );
 
 endmodule

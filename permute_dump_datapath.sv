@@ -22,6 +22,8 @@ module permute_dump_datapath (
     input  logic output_buffer_shift_en,
     input  logic output_counter_load,
     input  logic output_counter_rst,
+    input  logic valid_bytes_reset,
+    input  logic valid_bytes_enable,
 
     // Control outputs
     output logic output_buffer_empty,
@@ -57,6 +59,7 @@ module permute_dump_datapath (
     logic[w_byte_width-1:0] remaining_valid_bytes;  // goes from 0 to 7
 
     logic [31 - w_bit_width:0] remaining_valid_words;
+    logic [31 - w_bit_width:0] extra_valid_word;
     logic output_size_count_en;
 
     logic[w-1:0] buffer_output;
@@ -155,14 +158,13 @@ module permute_dump_datapath (
     // Reg for output masking
     // TODO: the slices here are really confusing, which has to do with the w_bit_width definition. Change this.
     // assign remaining_valid_bytes = (last_output_block_dump) ? output_size_counter[w_bit_width:3] : 'd8;
-    
     assign remaining_valid_bytes = output_size_counter[w_bit_width-1:3];
     regn #(
         .WIDTH(w_bit_width - 3)
     ) output_bytes_reg (
         .clk  (clk),
-        .rst (rst),
-        .en ((last_output_block_dump && output_counter_load)),
+        .rst (valid_bytes_reset || rst),
+        .en (valid_bytes_enable),
         .data_in (remaining_valid_bytes),
         .data_out (remaining_valid_bytes_dump)
     );
@@ -216,8 +218,9 @@ module permute_dump_datapath (
     //
 
     assign size_step = {21'b0, block_size}; // TODO: if this works, delete size_step
-
-    assign remaining_valid_words = output_size_counter[31:w_bit_width] + (remaining_valid_bytes ? 1 : 0);
+    assign extra_valid_word = remaining_valid_bytes ? 26'd1 : 26'd0;
+    // TODO: we should already do the addition on the [4:0] slice, to avoid unnecessary arithmetic
+    assign remaining_valid_words = output_size_counter[31:w_bit_width] + extra_valid_word;
     always_comb begin
         // TODO: check if last_output_block_dump needs to be regged into DUMP stage or not
         if (last_output_block_dump)
