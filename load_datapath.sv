@@ -16,7 +16,7 @@ module load_datapath (
     output logic input_size_reached,
     output logic input_buffer_full,
     output logic last_input_block,
-    output logic[RATE_SHAKE128-1:0] input_buffer_out,
+    output logic[RATE_SHAKE128-1:0] rate_input,
     output logic[31:0] output_size,
     output logic[1:0] operation_mode
 );
@@ -119,7 +119,7 @@ module load_datapath (
         .rst (rst),
         .en (load_enable),
         .data_in (padded_data_le),
-        .data_out (input_buffer_out)
+        .data_out (rate_input)
     );
 
 

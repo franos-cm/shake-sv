@@ -1,29 +1,30 @@
 module dump_fsm (
+    // External inputs
     input  logic clk,
     input  logic rst,
     input  logic ready_in,
-    input  logic output_buffer_we,
-    input  logic output_size_reached,
-    input  logic output_buffer_empty,
-    input  logic last_output_block_in,
 
-    // Control output signals
+    // Status signals
+    input  logic output_buffer_empty,
+
+    // Control signals
     output logic output_counter_load,
     output logic output_counter_rst,
     output logic output_buffer_shift_en,
     output logic valid_bytes_enable,
     output logic valid_bytes_reset,
-    output logic last_output_block,
+    output logic output_buffer_we_out,
+    output logic last_output_block_out,
+
+    // Pipeline handshaking
+    input  logic output_buffer_we_in,
+    input  logic last_output_block_in,
+    output logic last_output_block_clr,
+    output logic output_buffer_available_wr,
 
     // External outputs
-    output logic valid_out,
-
-    // Handshaking
-    output logic output_buffer_available_wr,
-    output logic last_output_block_clr
+    output logic valid_out
 );
-
-    logic data_still_in_buffer;
 
     // Define states using enum
     typedef enum logic [5:0] {
@@ -41,8 +42,9 @@ module dump_fsm (
             current_state <= next_state;
     end
 
-    assign data_still_in_buffer = (!output_buffer_empty);
-    assign last_output_block = last_output_block_in;
+    // Passthrough
+    assign output_buffer_we_out = output_buffer_we_in;
+    assign last_output_block_out = last_output_block_in;
 
     // Next state logic
     always_comb begin
@@ -58,7 +60,7 @@ module dump_fsm (
         unique case (current_state)
             // Initial state
             IDLE: begin
-                if (output_buffer_we) begin
+                if (output_buffer_we_in) begin
                     output_counter_load = 1;
                     valid_bytes_enable = last_output_block_in;
                     valid_bytes_reset = !last_output_block_in;
@@ -72,7 +74,7 @@ module dump_fsm (
             end
 
             WRITING: begin
-                if (data_still_in_buffer) begin
+                if (!output_buffer_empty) begin
                     valid_out = 1;
                     output_buffer_shift_en = ready_in;
                     next_state = WRITING;

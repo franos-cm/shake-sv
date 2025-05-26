@@ -8,7 +8,7 @@ module load_stage (
     input logic[w-1:0] data_in,
         
     // Inputs for next stage
-    output logic[RATE_SHAKE128-1:0] input_buffer_out,
+    output logic[RATE_SHAKE128-1:0] rate_input,
     output logic[31:0] output_size,
     output logic[1:0] operation_mode,
 
@@ -52,22 +52,22 @@ module load_stage (
     );
 
     load_datapath load_stage_datapath (
-        .clk                     (clk),
-        .rst                     (rst),
-        .data_in                 (data_in),
-        .load_enable             (load_enable),
-        .control_regs_enable     (control_regs_enable),
-        .input_buffer_full       (input_buffer_full),
-        .input_size_reached      (input_size_reached),
+        .clk                           (clk),
+        .rst                           (rst),
+        .data_in                       (data_in),
+        .load_enable                   (load_enable),
+        .control_regs_enable           (control_regs_enable),
+        .input_buffer_full             (input_buffer_full),
+        .input_size_reached            (input_size_reached),
         .first_incomplete_input_word   (first_incomplete_input_word),
-        .last_input_block        (last_input_block),
-        .input_buffer_out        (input_buffer_out),
-        .output_size             (output_size),
-        .operation_mode          (operation_mode),
-        .padding_enable          (padding_enable),
-        .padding_reset           (padding_reset),
-        .input_counter_en        (input_counter_en),
-        .input_counter_load      (input_counter_load)
+        .last_input_block              (last_input_block),
+        .rate_input                    (rate_input),
+        .output_size                   (output_size),
+        .operation_mode                (operation_mode),
+        .padding_enable                (padding_enable),
+        .padding_reset                 (padding_reset),
+        .input_counter_en              (input_counter_en),
+        .input_counter_load            (input_counter_load)
     );
 
 endmodule

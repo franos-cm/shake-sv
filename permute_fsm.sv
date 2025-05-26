@@ -1,22 +1,32 @@
 module permute_fsm (
+    // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic input_buffer_ready,
-    input  logic last_block_in_input_buffer,
+
+    // Status signals
     input  logic round_done,
     input  logic round_start,
-    input  logic output_buffer_available,
     input  logic last_output_block,
 
-    output logic copy_control_regs_en,
+    // Control signals
+    output logic state_reset,
+    output logic copy_control_data,
     output logic absorb_enable,
     output logic round_en,
     output logic round_count_load,
-    output logic output_buffer_we,
-    output logic state_reset,
-    output logic input_buffer_ready_clr,   // Handshaking signal
-    output logic last_block_in_buffer_clr, // Handshaking signal
-    output logic last_output_block_wr      // Handshaking signal
+    output logic output_size_count_en,
+
+    // First stage pipeline handshaking
+    input  logic input_buffer_ready,
+    output logic input_buffer_ready_clr,
+    input  logic last_block_in_input_buffer,
+    output logic last_block_in_buffer_clr,
+
+    // Second stage pipeline handshaking
+    input  logic output_buffer_available,
+    output logic output_buffer_available_clr,
+    output logic last_output_block_wr,
+    output logic output_buffer_we
 );
 
     // Define states using enum
@@ -41,25 +51,27 @@ module permute_fsm (
             current_state <= next_state;
     end
 
-    assign last_output_block_wr  = last_output_block;
+    // Passthrough
+    assign last_output_block_wr = last_output_block;
+    assign output_size_count_en = output_buffer_we;
+    assign output_buffer_available_clr = output_buffer_we;
 
     // Next state logic
     always_comb begin
+        copy_control_data        = 0;
+        state_reset              = 0;
         absorb_enable            = 0;
         round_en                 = 0;
-        output_buffer_we         = 0;
+        round_count_load         = 0;
         input_buffer_ready_clr   = 0;
         last_block_in_buffer_clr = 0;
-        copy_control_regs_en     = 0;
-        round_count_load         = 0;
-        state_reset              = 0;
+        output_buffer_we         = 0;
 
         unique case (current_state)
             // Initial state for resetting
             RESET: begin
                 next_state = WAIT_FIRST_ABSORB;
                 round_count_load = 1;
-                // TODO: drive a universal reset here
                 state_reset = 1;
             end
 
@@ -69,7 +81,7 @@ module permute_fsm (
                     next_state = WAIT_FIRST_ABSORB;
                 end
                 else begin
-                    copy_control_regs_en = 1;
+                    copy_control_data = 1;
                     absorb_enable = 1;
                     round_en = 1;
                     input_buffer_ready_clr = 1;
@@ -80,7 +92,7 @@ module permute_fsm (
 
             // Wait until first pipeline stage stays buffer is ready again
             // NOTE: the only difference between this and WAIT_FIRST_ABSORB,
-            //       is that we dont drive copy_control_regs_en=1.
+            //       is that we dont drive copy_control_data=1.
             WAIT_NEXT_ABSORB: begin
                 if (!input_buffer_ready) begin
                     next_state = WAIT_NEXT_ABSORB;
@@ -150,7 +162,7 @@ module permute_fsm (
                     // TODO: more complex transitions if last_output_block, straight to ABSORB or ABSORB_LAST
                     next_state = output_buffer_available ? WAIT_FIRST_ABSORB : DUMP;
                     state_reset = output_buffer_available;
-                    copy_control_regs_en = output_buffer_available;
+                    copy_control_data = output_buffer_available;
                 end
             end
 
