@@ -1,25 +1,33 @@
 module load_fsm (
+    // External inputs
     input  logic clk,
     input  logic rst,
     input  logic valid_in,
+
+    // Status signals
     input  logic input_buffer_full,
-    input  logic input_buffer_ready,
-    input  logic last_input_block,
     input  logic first_incomplete_input_word,
+    input  logic last_input_block,
     input  logic input_size_reached,
 
-    output logic ready_out,
-    output logic load_enable,
+    // Control signals
     output logic control_regs_enable,
-    output logic padding_reset,
-    output logic padding_enable,
+    output logic load_enable,
     output logic input_counter_en,
     output logic input_counter_load,
-    output logic input_buffer_ready_wr, // Handshaking signal
-    output logic last_block_in_buffer_wr // Handshaking signal, TODO: find better name
+    output logic padding_reset,
+    output logic padding_enable,
+
+    // Second stage pipeline handshaking
+    input  logic input_buffer_ready,
+    output logic input_buffer_ready_wr,
+    output logic last_block_in_buffer_wr,
+
+    // External outputs
+    output logic ready_out
 );
 
-    // Define states using enum
+    // FSM states
     typedef enum logic [5:0] {
         RESET,
         WAIT_HEADER,
@@ -27,7 +35,6 @@ module load_fsm (
         LOAD,
         WAIT_BUFFER_EMPTY
     } state_t;
-
     state_t current_state, next_state;
 
     // State register
@@ -39,12 +46,11 @@ module load_fsm (
     end
 
 
-    // TODO: this will probably include also some data from the second stage,
-    // like if the buffer has been used or not
+    // Passthrough
     assign last_block_in_buffer_wr = last_input_block;
 
 
-    // Next state logic
+    // Mealy Finite State Machine
     always_comb begin
         ready_out              = 0;
         load_enable            = 0;
@@ -59,7 +65,7 @@ module load_fsm (
             // Initial state for resetting
             RESET: begin
                 next_state = WAIT_HEADER;
-                // TODO: drive a universal reset here
+                padding_reset = 1;
             end
 
             // Waits for initial input (valid_in = 1), and when that happens,
@@ -82,7 +88,7 @@ module load_fsm (
 
             //  When it is available, load sipo according to valid_in
             LOAD: begin
-                padding_enable = first_incomplete_input_word; // NOTE: this needs to be here, cant be purely input combinatorial
+                padding_enable = first_incomplete_input_word;
                 if (!input_buffer_full) begin
                     load_enable = valid_in || padding_enable;
                     input_counter_en = load_enable;

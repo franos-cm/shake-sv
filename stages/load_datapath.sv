@@ -2,23 +2,29 @@ import keccak_pkg::*;
 
 
 module load_datapath (
+    // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic load_enable,
+    input  logic[w-1:0] data_in,
+
+    // Control signals
     input  logic control_regs_enable,
+    input  logic load_enable,
     input  logic padding_enable,
     input  logic padding_reset,
     input  logic input_counter_en,
     input  logic input_counter_load,
-    input  logic[w-1:0] data_in,
 
-    output logic first_incomplete_input_word,
-    output logic input_size_reached,
+    // Status signals
     output logic input_buffer_full,
+    output logic input_size_reached,
+    output logic first_incomplete_input_word,
     output logic last_input_block,
+
+    // Outputs for next pipeline stage
+    output logic[1:0] operation_mode,
     output logic[RATE_SHAKE128-1:0] rate_input,
-    output logic[31:0] output_size,
-    output logic[1:0] operation_mode
+    output logic[31:0] output_size
 );
     // ---------- Internal signals declaration ----------
     //
@@ -29,7 +35,7 @@ module load_datapath (
     logic [4:0] max_buffer_depth;
     logic[w_byte_width:0] remaining_valid_bytes; // goes from 0 to 8
     logic last_input_word;
-    logic [w-1:0] padded_data;    // Data after its been padded
+    logic [w-1:0] padded_data;    // Data after it's been padded
     logic [w-1:0] padded_data_le; // Little endian representation
 
 
