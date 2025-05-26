@@ -28,6 +28,7 @@ module permute_dump_datapath (
     output logic round_done,
     output logic last_output_block,
     output logic output_size_reached,
+    output logic round_start,
 
     // External outputs
     output logic[w-1:0] data_out,
@@ -89,6 +90,7 @@ module permute_dump_datapath (
         .load_max (round_count_load),
         .max_count(5'd23),
         .counter(round_num),
+        .count_start(round_start),
         .count_end(round_done)
     );
 

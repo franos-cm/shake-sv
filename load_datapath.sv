@@ -96,7 +96,6 @@ module load_datapath (
     );
 
     // Counter for input buffer: corresponds to how many positions are filled
-    // TODO: Currently, if this counts to N, there are N+1 states, which might not be desirable
     countern #(
         .WIDTH(5)
     ) input_counter (

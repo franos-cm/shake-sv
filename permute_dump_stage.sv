@@ -24,6 +24,7 @@ module permute_dump_stage (
 );
     logic round_count_load;
     logic round_done;
+    logic round_start;
     logic last_output_block;
     logic absorb_enable;
     logic round_en;
@@ -52,6 +53,7 @@ module permute_dump_stage (
         .last_block_in_input_buffer (last_block_in_buffer),
         .round_count_load           (round_count_load),
         .round_done                 (round_done),
+        .round_start                (round_start),
         .output_buffer_available    (output_buffer_available),
         .last_output_block          (last_output_block),
         .absorb_enable              (absorb_enable),
@@ -104,6 +106,7 @@ module permute_dump_stage (
         .output_size_in          (output_size),
         .operation_mode_in       (operation_mode),
         .round_count_load        (round_count_load),
+        .round_start             (round_start),
         .round_done              (round_done),
         .last_output_block       (last_output_block),
         .output_size_reached     (output_size_reached),
