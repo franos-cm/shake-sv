@@ -29,15 +29,13 @@ module dump_datapath (
     // ---------- Internal signals declaration ----------
     //
     logic [4:0] max_buffer_depth;
+    logic [4:0] remaining_valid_words;
+    logic [4:0] extra_valid_word;
 
-    logic [31-w_bit_width:0] extra_valid_word;
-    logic [31-w_bit_width:0] remaining_valid_words;
-
-    logic[w-1:0] buffer_output;
     logic[w_byte_width-1:0] remaining_valid_bytes, remaining_valid_bytes_reg;  // NOTE: goes from 0 to 7
+    logic[w-1:0] buffer_output;
     logic[w_byte_size-1:0] zero_mask_sel;
     logic last_word_from_block;
-
 
 
     // -------------------- Components --------------------
@@ -56,12 +54,13 @@ module dump_datapath (
     );
 
     // Reg for output masking
-    // TODO: the slices here are really confusing, which has to do with the w_bit_width definition. Change this.
+    // TODO: the slices here are really confusing, which has to do with the definition of w_bit_width. Change this.
+    assign remaining_valid_bytes = output_size[w_bit_width-1:3];
     regn #(
         .WIDTH(w_bit_width - 3)
     ) output_bytes_reg (
         .clk  (clk),
-        .rst (valid_bytes_reset || rst),
+        .rst (valid_bytes_reset),
         .en (valid_bytes_enable),
         .data_in (remaining_valid_bytes),
         .data_out (remaining_valid_bytes_reg)
@@ -82,13 +81,9 @@ module dump_datapath (
     // ----------------- Combinatorial assignments -----------------
     //
 
-    // Useful signals
-    assign remaining_valid_bytes = output_size[w_bit_width-1:3];
-    assign extra_valid_word = remaining_valid_bytes ? 26'd1 : 26'd0;
-    // TODO: we should already do the addition on the [4:0] slice, to avoid unnecessary arithmetic
-    assign remaining_valid_words = output_size[31:w_bit_width] + extra_valid_word;
-    
     // Decide how many words will there be in the buffer
+    assign extra_valid_word = remaining_valid_bytes ? 5'd1 : 5'd0;
+    assign remaining_valid_words = output_size[w_bit_width+5:w_bit_width] + extra_valid_word;
     always_comb begin
         if (last_output_block)
             max_buffer_depth = remaining_valid_words[4:0];

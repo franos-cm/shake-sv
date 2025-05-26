@@ -31,7 +31,6 @@ module load_datapath (
     logic last_word_in_block;
     logic [4:0] input_buffer_counter;
     logic [31:0] input_size_counter;
-    logic [1:0] operation_mode_reg;
     logic [4:0] max_buffer_depth;
     logic[w_byte_width:0] remaining_valid_bytes; // goes from 0 to 8
     logic last_input_word;
@@ -49,7 +48,7 @@ module load_datapath (
         .rst (rst),
         .en (control_regs_enable),
         .data_in (data_in[62:61]), // NOTE: only these middle bits are needed, since those are the ones that change
-        .data_out (operation_mode_reg)
+        .data_out (operation_mode)
     );
 
     // Output size reg, to transmit to next pipeline stage
@@ -83,15 +82,13 @@ module load_datapath (
     );
 
     // Padding Generator
-    // NOTE doing this in a parametric way possibly makes it more confusing
+    // NOTE: doing this in a parametric way possibly makes it more confusing
     assign remaining_valid_bytes = input_size_counter[w_bit_width:3];
     assign first_incomplete_input_word = last_input_word && (remaining_valid_bytes != w_byte_size);
     // NOTE: hacky way of subtracting 1 from odd number, but it should simplify synthesis
-    // TODO: is this comparison fine?
     assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
     padding_generator padding_gen (
         .clk (clk),
-        .rst (rst),
         .data_in (data_in),
         .remaining_valid_bytes(remaining_valid_bytes),
         .padding_enable(padding_enable),
@@ -139,11 +136,8 @@ module load_datapath (
             default: max_buffer_depth = 5'd21;
         endcase
     end
-    // Kind of a hack: enable passthrough so we can get the
-    // correct value of operation mode
-    assign operation_mode = operation_mode_reg; // TODO: if this assignment is correct, delete operation_mode_reg
+
     // Input transformations
     assign padded_data_le = EndianSwitcher#(w)::switch(padded_data);
-
 
 endmodule

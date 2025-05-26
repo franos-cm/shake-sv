@@ -1,14 +1,15 @@
 import keccak_pkg::*;
 
 module padding_generator (
+    // Data in
     input  logic  clk,
-    input  logic  rst,
-
     input logic[w-1:0] data_in,
+
+    // Control signals
     input logic [w_byte_width:0] remaining_valid_bytes, // How many of the input bytes are valid
-    input logic padding_enable,     // Flag if padding is already needed
-    input logic last_word_in_block, // Flag if current word is last of block
-    input logic padding_reset,      // Flag to reset padding latches
+    input logic padding_enable,                         // Flag if padding is already needed
+    input logic last_word_in_block,                     // Flag if current word is last of block
+    input logic padding_reset,                          // Flag to reset padding latches
 
     // Data out
     output logic last_block,
@@ -20,30 +21,25 @@ module padding_generator (
     localparam logic [7:0] TERMINATOR_PADDING_BYTE = 8'h80;
     // Used in edge case when the last byte has both the domain separator, and the 10*1 padding
     localparam logic [7:0] COMPLETE_PADDING_BYTE = 8'h9F;
-
     
     logic [w_byte_size-1:0] first_pad_word_sel;
     logic [w_byte_size-1:0] padding_mask_sel;
     logic [7:0] byte_pad[w_byte_size-1:0];
-    logic first_pad_used_set;
     logic first_pad_used;
 
 
     // Latch to know if the first pad has already been used
     latch first_pad_used_latch (
         .clk (clk),
-        .set (first_pad_used_set),
-        .rst (padding_reset || rst),
+        .set (padding_enable),
+        .rst (padding_reset),
         .q   (first_pad_used)
     );
-
 
     // Decide what the padding should be for each byte. NOTE: lookup tables might be better
     assign first_pad_word_sel = (padding_enable && !first_pad_used) ? (8'b1000_0000 >> remaining_valid_bytes) : '0;
     assign padding_mask_sel = padding_enable ? (8'hFF >> remaining_valid_bytes) : '0;
     // Decide when the first_pad has been applied
-    // TODO: double check this, especially conversion
-    assign first_pad_used_set = padding_enable;
     assign last_block = first_pad_used;
 
     always_comb begin

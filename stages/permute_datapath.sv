@@ -81,7 +81,7 @@ module permute_datapath (
         .WIDTH(STATE_WIDTH)
     ) state_reg (
         .clk  (clk),
-        .rst (state_reset || rst),
+        .rst (state_reset),
         .en (round_en),
         .data_in (state_reg_in),
         .data_out (state_reg_out)

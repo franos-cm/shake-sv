@@ -29,7 +29,7 @@ module permute_fsm (
     output logic output_buffer_we
 );
 
-    // Define states using enum
+    // FSM states
     typedef enum logic [5:0] {
         RESET,
         WAIT_FIRST_ABSORB,
@@ -40,7 +40,6 @@ module permute_fsm (
         SQUEEZE,
         WAIT_DUMP
     } state_t;
-
     state_t current_state, next_state;
 
     // State register
@@ -51,12 +50,8 @@ module permute_fsm (
             current_state <= next_state;
     end
 
-    // Passthrough
-    assign last_output_block_wr = last_output_block;
-    assign output_size_count_en = output_buffer_we;
-    assign output_buffer_available_clr = output_buffer_we;
 
-    // Next state logic
+    // -------------- Mealy Finite State Machine --------------
     always_comb begin
         copy_control_data        = 0;
         state_reset              = 0;
@@ -73,6 +68,8 @@ module permute_fsm (
                 next_state = WAIT_FIRST_ABSORB;
                 round_count_load = 1;
                 state_reset = 1;
+                input_buffer_ready_clr = 1;
+                last_block_in_buffer_clr = 1;
             end
 
             // Wait until first pipeline stage stays buffer is ready for the first time
@@ -119,12 +116,6 @@ module permute_fsm (
                     input_buffer_ready_clr = round_done;
                 end
 
-                // Or, it is done and we can go straight to absorbing the next (non last) block
-                // else if (round_done && input_buffer_ready && !last_block_in_input_buffer) begin
-                //     next_state = ABSORB;
-                //     round_en = 1;
-                // end
-
                 // Or, if round is done, and the last block is waiting to be absorbed, we change states
                 else if (round_done && input_buffer_ready && last_block_in_input_buffer) begin
                     next_state = ABSORB_LAST;
@@ -158,7 +149,6 @@ module permute_fsm (
                     next_state = SQUEEZE;
                 end
                 else begin
-                    // Trying to get rid of that last state by cycling in DUMP
                     // TODO: more complex transitions if last_output_block, straight to ABSORB or ABSORB_LAST
                     next_state = output_buffer_available ? WAIT_FIRST_ABSORB : DUMP;
                     state_reset = output_buffer_available;
@@ -180,5 +170,12 @@ module permute_fsm (
             default: next_state = RESET;
         endcase
     end
+
+
+    // -------------- Other comb assignments --------------
+    // Passthrough
+    assign last_output_block_wr = last_output_block;
+    assign output_size_count_en = output_buffer_we;
+    assign output_buffer_available_clr = output_buffer_we || rst;
 
 endmodule

@@ -68,13 +68,13 @@ module keccak (
     latch input_buffer_ready_latch (
         .clk (clk),
         .set (input_buffer_ready_wr),
-        .rst (input_buffer_ready_clr || rst),
+        .rst (input_buffer_ready_clr),
         .q   (input_buffer_ready)
     );
     latch last_block_in_buffer_latch (
         .clk (clk),
         .set (last_block_in_buffer_wr),
-        .rst (last_block_in_buffer_clr || rst),
+        .rst (last_block_in_buffer_clr),
         .q   (last_block_in_buffer)
     );
 
@@ -107,13 +107,13 @@ module keccak (
     latch output_buffer_available_latch (
         .clk (clk),
         .set (output_buffer_available_wr),
-        .rst (output_buffer_available_clr || rst),
+        .rst (output_buffer_available_clr),
         .q   (output_buffer_available)
     );
     latch last_output_block_latch (
         .clk (clk),
         .set (last_output_block_wr),
-        .rst (last_output_block_clr || rst),
+        .rst (last_output_block_clr),
         .q   (last_output_block)
     );
 

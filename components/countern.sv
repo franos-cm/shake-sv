@@ -12,12 +12,8 @@ module countern #(
     output logic count_last,
     output logic count_start
 );
-    // TODO: not satisfied with this load_max and max_count stuff...
-    //       makes it probably too complicated
-    //       will have to test it
-    //       or... make it combinatorial?
-    logic [WIDTH-1:0] _counter;
     logic [WIDTH-1:0] _max_count;
+    logic [WIDTH-1:0] _counter;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin

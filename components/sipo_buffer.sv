@@ -23,7 +23,6 @@ module sipo_buffer #(
             buffer_data[DEPTH - 1] <= data_in;
         end
 
-    // TODO: revise if desctructuring is coherent with sipo from reference code
     always_comb begin
         for (int i = 0; i < DEPTH; i++) begin
             data_out[(i+1)*WIDTH-1 -: WIDTH] = buffer_data[DEPTH-1-i];

@@ -46,11 +46,7 @@ module load_fsm (
     end
 
 
-    // Passthrough
-    assign last_block_in_buffer_wr = last_input_block;
-
-
-    // Mealy Finite State Machine
+    // -------------- Mealy Finite State Machine --------------
     always_comb begin
         ready_out              = 0;
         load_enable            = 0;
@@ -110,5 +106,11 @@ module load_fsm (
             default: next_state = RESET;
         endcase
     end
+
+
+    // -------------- Other comb assignments --------------
+    // Passthrough
+    assign last_block_in_buffer_wr = last_input_block;
+
 
 endmodule
