@@ -9,6 +9,7 @@ module countern #(
 
     output logic[WIDTH-1:0] counter,
     output logic count_end,
+    output logic count_last,
     output logic count_start
 );
     // TODO: not satisfied with this load_max and max_count stuff...
@@ -33,6 +34,8 @@ module countern #(
     end
 
     assign counter = _counter;
-    assign count_end = _counter == _max_count;
     assign count_start = _counter == '0;
+    assign count_last = _counter == (_max_count - 1);
+    assign count_end = _counter == _max_count;
+
 endmodule

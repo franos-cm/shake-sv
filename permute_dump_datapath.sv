@@ -53,9 +53,15 @@ module permute_dump_datapath (
     logic[31:0] output_size_counter;
     logic[31:0] size_step;
     logic [4:0] max_buffer_depth;
-    logic[w_byte_width:0] remaining_valid_bytes;  // goes from 0 to 8
+    logic[w_byte_width-1:0] remaining_valid_bytes;  // goes from 0 to 7
+
     logic [31 - w_bit_width:0] remaining_valid_words;
     logic output_size_count_en;
+
+    logic[w-1:0] buffer_output;
+    logic[w_byte_width-1:0] remaining_valid_bytes_dump;  // goes from 0 to 7
+    logic[w_byte_size-1:0] zero_mask_sel;
+    logic last_word_from_block;
 
 
 
@@ -140,7 +146,23 @@ module permute_dump_datapath (
         .en (output_buffer_shift_en),
         .load_max (output_counter_load),
         .max_count (max_buffer_depth),
-        .count_end(output_buffer_empty)
+        .count_last (last_word_from_block),
+        .count_end (output_buffer_empty)
+    );
+
+    // Reg for output masking
+    // TODO: the slices here are really confusing, which has to do with the w_bit_width definition. Change this.
+    // assign remaining_valid_bytes = (last_output_block_dump) ? output_size_counter[w_bit_width:3] : 'd8;
+    
+    assign remaining_valid_bytes = output_size_counter[w_bit_width-1:3];
+    regn #(
+        .WIDTH(w_bit_width - 3)
+    ) output_bytes_reg (
+        .clk  (clk),
+        .rst (rst),
+        .en ((last_output_block_dump && output_counter_load)),
+        .data_in (remaining_valid_bytes),
+        .data_out (remaining_valid_bytes_dump)
     );
 
     piso_buffer #(
@@ -152,7 +174,7 @@ module permute_dump_datapath (
         .write_enable (output_buffer_we),
         .shift_enable (output_buffer_shift_en),
         .data_in (rate_output),
-        .data_out (data_out)
+        .data_out (buffer_output)
     );
 
     // ------- Permute Combinatorial assignments ---------
@@ -193,6 +215,7 @@ module permute_dump_datapath (
 
     assign size_step = {21'b0, block_size}; // TODO: if this works, delete size_step
 
+    assign remaining_valid_words = output_size_counter[31:w_bit_width] + (remaining_valid_bytes ? 1 : 0);
     always_comb begin
         // TODO: check if last_output_block_dump needs to be regged into DUMP stage or not
         if (last_output_block_dump)
@@ -203,8 +226,11 @@ module permute_dump_datapath (
             max_buffer_depth = 5'd21;
     end
 
-    assign remaining_valid_words = output_size_counter[31:w_bit_width];
-    // Use this for masking output?
-    assign remaining_valid_bytes = output_size_counter[w_bit_width:3];
+    // Zero mask when last word is not complete
+    assign zero_mask_sel = (last_word_from_block && remaining_valid_bytes_dump) ? (8'hFF >> remaining_valid_bytes_dump) : '0;
+    always_comb begin
+        for (int i = 0; i < w_byte_size; i++)
+            data_out[(i+1)*8-1 -: 8] = zero_mask_sel[i] ? 8'h00 : buffer_output[(i+1)*8-1 -: 8];
+    end
 
 endmodule
