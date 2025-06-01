@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module dump_fsm (
     // External inputs
     input  logic clk,
@@ -34,7 +36,7 @@ module dump_fsm (
     state_t current_state, next_state;
 
     // State register
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst)
             current_state <= IDLE;
         else
@@ -70,8 +72,10 @@ module dump_fsm (
             end
 
             WRITING: begin
+                // NOTE: in theory, probably we could do valid_out = 1 here,
+                //        but this more closely mirrors the original module.
+                valid_out = ready_in;
                 if (!output_buffer_empty) begin
-                    valid_out = 1;
                     output_buffer_shift_en = ready_in;
                     next_state = WRITING;
                 end

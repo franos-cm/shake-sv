@@ -26,8 +26,8 @@ ARCHITECTURE behavior OF sha_tb_all IS
 	constant pad_str 		: string := get_pad_str( pad_mode );
 	constant split_str 		: string := get_split_str( split_type );
 	constant interface_str 	: string := get_interface_str( interface_type );
-	constant ifile_name 	: string := "/home/franos/projects/project-petalite/keccak/2_keccak_petalite/tb/kat/ALL_ZERO_ALL_VERSION_IN.txt";
-	constant ofile_name 	: string := "/home/franos/projects/project-petalite/keccak/2_keccak_petalite/tb/kat/ALL_ZERO_ALL_VERSION_OUT.txt";
+	constant ifile_name 	: string := "/home/franos/projects/shake-sv/tb/kat/ALL_ZERO_ALL_VERSION_IN.txt";
+	constant ofile_name 	: string := "/home/franos/projects/shake-sv/tb/kat/ALL_ZERO_ALL_VERSION_OUT.txt";
 
 	-- =================== --
 	-- SIGNALS DECLARATION --

@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module size_counter #(
     parameter int WIDTH = 32,
     parameter int w = 64

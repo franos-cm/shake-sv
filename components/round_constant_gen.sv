@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module round_constant_generator #(
     parameter int w = 64
 ) (

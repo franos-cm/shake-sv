@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module permute_fsm (
     // External inputs
     input  logic clk,
@@ -43,7 +45,7 @@ module permute_fsm (
     state_t current_state, next_state;
 
     // State register
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst)
             current_state <= RESET;
         else

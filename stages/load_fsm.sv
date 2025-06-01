@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module load_fsm (
     // External inputs
     input  logic clk,
@@ -38,7 +40,7 @@ module load_fsm (
     state_t current_state, next_state;
 
     // State register
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst)
             current_state <= RESET;
         else
@@ -84,9 +86,11 @@ module load_fsm (
 
             //  When it is available, load sipo according to valid_in
             LOAD: begin
-                padding_enable = first_incomplete_input_word;
+                // Start padding once the final input word is in data_in
+                padding_enable = (input_size_reached) || (first_incomplete_input_word && valid_in);
                 if (!input_buffer_full) begin
-                    load_enable = valid_in || padding_enable;
+                    // Either the data in data_in is valid, or we already started padding
+                    load_enable = valid_in || input_size_reached;
                     input_counter_en = load_enable;
                     ready_out = valid_in && !input_size_reached;
                     next_state = LOAD;

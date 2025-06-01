@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 import keccak_pkg::*;
 
 module padding_generator (

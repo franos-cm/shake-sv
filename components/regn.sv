@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module regn #(
     parameter int WIDTH = 32,
     parameter logic [WIDTH-1:0] INIT = '0

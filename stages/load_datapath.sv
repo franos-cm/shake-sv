@@ -1,5 +1,6 @@
-import keccak_pkg::*;
+`timescale 1ns / 1ps
 
+import keccak_pkg::*;
 
 module load_datapath (
     // External inputs

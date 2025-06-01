@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module countern #(
     parameter int WIDTH = 32
 ) (

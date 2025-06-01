@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 import keccak_pkg::STATE_WIDTH;
 import keccak_pkg::w;
 

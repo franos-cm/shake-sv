@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module sipo_buffer #(
     parameter int WIDTH,
     parameter int DEPTH
@@ -10,13 +12,8 @@ module sipo_buffer #(
 );
     logic [WIDTH-1:0] buffer_data [DEPTH-1:0];
 
-    always_ff @(posedge clk or posedge rst)
-        if (rst) begin
-            // reset
-            for (int i = 0; i < DEPTH; i++)
-                buffer_data[i] <= '0;
-        end
-        else if (en) begin
+    always_ff @(posedge clk)
+        if (en) begin
             // shift
             for (int i = 0; i < DEPTH - 1; i++)
                 buffer_data[i] <= buffer_data[i + 1];
