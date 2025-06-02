@@ -72,10 +72,10 @@ module dump_fsm (
             end
 
             WRITING: begin
-                // NOTE: in theory, probably we could do valid_out = 1 here,
-                //        but this more closely mirrors the original module.
-                valid_out = ready_in;
                 if (!output_buffer_empty) begin
+                    // NOTE: in theory, probably we could do valid_out = 1 here,
+                    //       but this more closely mirrors the original module.
+                    valid_out = ready_in;
                     output_buffer_shift_en = ready_in;
                     next_state = WRITING;
                 end
