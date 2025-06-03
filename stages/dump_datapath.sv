@@ -53,9 +53,11 @@ module dump_datapath (
         .en (output_buffer_shift_en),
         .load_max (output_counter_load),
         .max_count (max_buffer_depth),
-        .count_last (last_word_from_block),
-        .count_end (output_buffer_empty)
+        .count_last (last_word_from_block)
+        //.count_end (output_buffer_empty)
     );
+    // TODO: if this assign works, we can get rid of .count_end
+    assign output_buffer_empty = last_word_from_block;
 
     // Reg for output masking
     // TODO: the slices here are really confusing, which has to do with the definition of w_bit_width. Change this.
