@@ -59,7 +59,7 @@ module keccak (
         // External outputs
         .ready_out               (ready_out),
         // Second stage pipeline handshaking
-        .input_buffer_ready      (input_buffer_ready),
+        .input_buffer_ready      (input_buffer_ready && !input_buffer_ready_clr), // NOTE: passthrough of clear signal
         .input_buffer_ready_wr   (input_buffer_ready_wr),
         .last_block_in_buffer_wr (last_block_in_buffer_wr)
     );
