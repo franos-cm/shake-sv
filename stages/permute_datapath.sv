@@ -28,7 +28,8 @@ module permute_datapath (
     // Outputs for next pipeline stage
     output logic[RATE_SHAKE128-1:0] rate_output,
     output logic[1:0] operation_mode_out,
-    output logic[31:0] output_size_out
+    output logic[31:0] output_size_out,
+    output logic buffer_ready_clr_delay
 );
     // ---------- Internal signals declaration ----------
     //
@@ -70,6 +71,7 @@ module permute_datapath (
         .count_start(round_start),
         .count_end(round_done)
     );
+    assign buffer_ready_clr_delay = (round_num == 5'd5);
 
     // Round number to constant mapper
     round_constant_generator round_constant_gen (

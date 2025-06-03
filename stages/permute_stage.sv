@@ -42,6 +42,7 @@ module permute_stage (
     logic round_done;
     logic round_start;
     logic last_output_block;
+    logic buffer_ready_clr_delay;
 
 
     permute_fsm permute_stage_fsm (
@@ -68,7 +69,8 @@ module permute_stage (
         .output_buffer_available      (output_buffer_available),
         .output_buffer_available_clr  (output_buffer_available_clr),
         .last_output_block_wr         (last_output_block_wr),
-        .output_buffer_we             (output_buffer_we)
+        .output_buffer_we             (output_buffer_we),
+        .buffer_ready_clr_delay       (buffer_ready_clr_delay)
     );
 
 
@@ -94,7 +96,8 @@ module permute_stage (
         // Outputs for next pipeline stage
         .rate_output             (rate_output),
         .operation_mode_out      (operation_mode_out),
-        .output_size_out         (output_size_out)
+        .output_size_out         (output_size_out),
+        .buffer_ready_clr_delay  (buffer_ready_clr_delay)
 
     );
 
