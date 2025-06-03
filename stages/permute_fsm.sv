@@ -171,7 +171,7 @@ module permute_fsm (
 
             // Squeeze another block
             WAIT_DUMP: begin
-                next_state = output_buffer_available ? DUMP : WAIT_DUMP;
+                next_state = output_buffer_available ? DELAY : WAIT_DUMP;
             end
 
             default: next_state = RESET;
