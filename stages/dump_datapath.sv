@@ -73,7 +73,7 @@ module dump_datapath (
     );
 
     regn #(
-        .WIDTH(STATE_WIDTH)
+        .WIDTH(RATE_SHAKE128)
     ) intermediate_reg (
         .clk  (clk),
         .rst (rst),
