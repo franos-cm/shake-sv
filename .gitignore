@@ -1,4 +1,2 @@
 .Xil
-*.log
-*.jou
-*.str
+vivado/

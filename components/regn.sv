@@ -10,7 +10,7 @@ module regn #(
     input  logic [WIDTH-1:0] data_in,
     output logic [WIDTH-1:0] data_out
 );
-    logic [WIDTH-1:0] buffer = 0;
+    logic [WIDTH-1:0] buffer;
 
     always_ff @(posedge clk) begin
         if (rst)

@@ -71,15 +71,16 @@ module load_datapath (
         .clk (clk),
         .rst (rst),
         .data_in(data_in[31:0]),
-        .en_write(control_regs_enable),
         .step_size(w),
+        .en_data(control_regs_enable),
         .en_count(load_enable),
         .last_word(last_input_word),
         .counter_end(input_size_reached),
-        .counter(input_size_counter)
+        .counter(input_size_counter),
         // The block_size input doesnt really matter here.
         // That is, since we need to account for padding,
         // last_block is driven by the padding generator.
+        .en_block('0)
     );
 
     // Padding Generator
