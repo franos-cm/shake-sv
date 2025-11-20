@@ -25,9 +25,10 @@ package keccak_pkg;
   // I believe this is synthethizable in Vivado
   // Otherwise, we should turn it into functions
   class EndianSwitcher #(parameter int WIDTH = 64);
+    localparam int NUM_BYTES = WIDTH / 8;
+  
     // Static function: reverses the byte order
     static function logic [WIDTH-1:0] switch(input logic [WIDTH-1:0] x);
-      const int NUM_BYTES = WIDTH / 8;
       logic [WIDTH-1:0] result;
 
       for (int i = 0; i < NUM_BYTES; i++) begin
