@@ -102,7 +102,8 @@ module permute_datapath (
     ) output_size_left (
         .clk (clk),
         .rst (rst),
-        .en_write(copy_control_data),
+        .en_data(copy_control_data),
+        .en_block(copy_control_data),
         .en_count(output_size_count_en),
         .block_size(block_size),
         .step_size({21'b0, block_size}),

@@ -5,14 +5,6 @@ This project is a SystemVerilog implementation of the Keccak cryptographic hash 
 It is heavily inspired by [a similar project in VHDL](https://github.com/GMUCERG/SHAKE), using not only the same interface for the design unit, but also the exact same testbenches for validating it.
 Therefore, reading the documentation for the original project is highly recommended.
 
->**⚠️**  **Warning**
->
->At the moment, although this module passes all testbench checks, it has some unidentified issue affecting the output, as I noticed while I was using it for a side project.
->  
-> As such, this other [branch](https://github.com/franos-cm/shake-sv/tree/dilithium-compat) has been verified (in this other project) to produce the correct outputs, at the expense of both more resource usage and higher latency.
->
-> I will eventually debug what exactly is causing this difference in behaviour, and will update the main branch accordingly. However, for now, using the other branch is recommendable.
-
 
 # Key Points
 
@@ -48,7 +40,7 @@ In any case, the necessary adjustments should be minimal. Most tools support sim
 
 
 # Project Structure
-- `shave-sv/`
+- `shake-sv/`
   
   - `components/`: simple components used throughout the design unit. Includes mostly standard components like `regn.sv` and `coutern.sv`, but also ones specific to Keccak, such as `round.sv` and `padding_gen.sv`.
 

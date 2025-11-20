@@ -17,7 +17,7 @@ module countern #(
     logic [WIDTH-1:0] _max_count;
     logic [WIDTH-1:0] _counter;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             _counter <= '0;
             _max_count <= '1;
