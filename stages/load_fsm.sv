@@ -88,17 +88,19 @@ module load_fsm (
             LOAD: begin
                 // Start padding once the final input word is in data_in
                 padding_enable = (input_size_reached) || (first_incomplete_input_word && valid_in);
-                if (!input_buffer_full) begin
-                    // Either the data in data_in is valid, or we already started padding
-                    load_enable = valid_in || input_size_reached;
-                    input_counter_en = load_enable;
-                    ready_out = valid_in && !input_size_reached;
+                // Either the data in data_in is valid, or we already started padding
+                load_enable = valid_in || input_size_reached;
+                input_counter_en = load_enable;
+                ready_out = valid_in && !input_size_reached;
+                next_state = LOAD;
+
+                if (!input_buffer_full || (input_buffer_full && !load_enable)) begin
                     next_state = LOAD;
                 end
                 else begin
+                    padding_reset = last_input_block;
                     input_buffer_ready_wr = 1; // Signal to next pipeline state that buffer is ready
                     input_counter_en = 1;      // NOTE: we do this to reset the input counter
-                    padding_reset = last_input_block;
                     next_state = last_input_block ? WAIT_BUFFER_EMPTY : WAIT_LOAD;
                 end
             end

@@ -132,9 +132,9 @@ module load_datapath (
     // Decide block size based on current operation mode
     always_comb begin
         unique case (operation_mode)
-            SHAKE256_MODE_VEC: max_buffer_depth = 5'd17;
-            SHAKE128_MODE_VEC: max_buffer_depth = 5'd21;
-            default: max_buffer_depth = 5'd21;
+            SHAKE256_MODE_VEC: max_buffer_depth = 5'd16;
+            SHAKE128_MODE_VEC: max_buffer_depth = 5'd20;
+            default: max_buffer_depth = 5'd20;
         endcase
     end
 

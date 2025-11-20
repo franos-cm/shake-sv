@@ -22,7 +22,7 @@ module dump_datapath (
     input  logic valid_bytes_enable,
 
     // Status signals
-    output logic output_buffer_empty,
+    output logic last_word_from_block,
 
     // External outputs
     output logic[w-1:0] data_out
@@ -36,7 +36,6 @@ module dump_datapath (
     logic[w_byte_width-1:0] remaining_valid_bytes, remaining_valid_bytes_reg;  // NOTE: goes from 0 to 7
     logic[w-1:0] buffer_output;
     logic[w_byte_size-1:0] zero_mask_sel;
-    logic last_word_from_block;
 
 
     // -------------------- Components --------------------
@@ -50,8 +49,7 @@ module dump_datapath (
         .en (output_buffer_shift_en),
         .load_max (output_counter_load),
         .max_count (max_buffer_depth),
-        .count_last (last_word_from_block),
-        .count_end (output_buffer_empty)
+        .count_last (last_word_from_block)
     );
 
     // Reg for output masking

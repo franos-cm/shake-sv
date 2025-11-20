@@ -24,7 +24,7 @@ module dump_stage (
     output logic output_buffer_available_wr
 );
     logic output_buffer_shift_en;
-    logic output_buffer_empty;
+    logic last_word_from_block;
     logic output_counter_rst, output_counter_load;
     logic valid_bytes_enable, valid_bytes_reset;
     logic last_output_block_internal, output_buffer_we_internal;
@@ -38,7 +38,7 @@ module dump_stage (
         .output_buffer_we_in         (output_buffer_we),
         .last_output_block_in        (last_output_block),
         // Status signals
-        .output_buffer_empty         (output_buffer_empty),
+        .last_word_from_block         (last_word_from_block),
         // Control signals
         .output_counter_load         (output_counter_load),
         .output_counter_rst          (output_counter_rst),
@@ -71,7 +71,7 @@ module dump_stage (
         .valid_bytes_reset       (valid_bytes_reset),
         .valid_bytes_enable      (valid_bytes_enable),
         // Status signals
-        .output_buffer_empty     (output_buffer_empty),
+        .last_word_from_block     (last_word_from_block),
         // External outputs
         .data_out                (data_out)
     );
