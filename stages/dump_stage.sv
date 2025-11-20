@@ -28,6 +28,7 @@ module dump_stage (
     logic output_counter_rst, output_counter_load;
     logic valid_bytes_enable, valid_bytes_reset;
     logic last_output_block_internal, output_buffer_we_internal;
+    logic intermediate_buffer_we;
 
     dump_fsm dump_stage_fsm (
         // External inputs
@@ -51,7 +52,8 @@ module dump_stage (
         .output_buffer_available_wr  (output_buffer_available_wr),
         .last_output_block_clr       (last_output_block_clr),
         // External outputs
-        .valid_out                   (valid_out)
+        .valid_out                   (valid_out),
+        .intermediate_buffer_we      (intermediate_buffer_we)
     );
 
     dump_datapath dump_stage_datapath (
@@ -73,7 +75,8 @@ module dump_stage (
         // Status signals
         .output_buffer_empty     (output_buffer_empty),
         // External outputs
-        .data_out                (data_out)
+        .data_out                (data_out),
+        .intermediate_buffer_we  (intermediate_buffer_we)
     );
 
 endmodule

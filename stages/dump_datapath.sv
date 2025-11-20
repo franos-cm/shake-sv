@@ -25,7 +25,8 @@ module dump_datapath (
     output logic output_buffer_empty,
 
     // External outputs
-    output logic[w-1:0] data_out
+    output logic[w-1:0] data_out,
+    input  logic intermediate_buffer_we
 );
     // ---------- Internal signals declaration ----------
     //
@@ -37,6 +38,8 @@ module dump_datapath (
     logic[w-1:0] buffer_output;
     logic[w_byte_size-1:0] zero_mask_sel;
     logic last_word_from_block;
+
+    logic[RATE_SHAKE128-1:0] intermediate_buffer_data;
 
 
     // -------------------- Components --------------------
@@ -50,9 +53,11 @@ module dump_datapath (
         .en (output_buffer_shift_en),
         .load_max (output_counter_load),
         .max_count (max_buffer_depth),
-        .count_last (last_word_from_block),
-        .count_end (output_buffer_empty)
+        .count_last (last_word_from_block)
+        //.count_end (output_buffer_empty)
     );
+    // TODO: if this assign works, we can get rid of .count_end
+    assign output_buffer_empty = last_word_from_block;
 
     // Reg for output masking
     // TODO: the slices here are really confusing, which has to do with the definition of w_bit_width. Change this.
@@ -67,6 +72,16 @@ module dump_datapath (
         .data_out (remaining_valid_bytes_reg)
     );
 
+    regn #(
+        .WIDTH(RATE_SHAKE128)
+    ) intermediate_reg (
+        .clk  (clk),
+        .rst (rst),
+        .en (intermediate_buffer_we),
+        .data_in (rate_output),
+        .data_out (intermediate_buffer_data)
+    );
+
     piso_buffer #(
         .WIDTH(w),
         .DEPTH(RATE_SHAKE128/w)
@@ -75,7 +90,7 @@ module dump_datapath (
         .rst (rst),
         .write_enable (output_buffer_we),
         .shift_enable (output_buffer_shift_en),
-        .data_in (rate_output),
+        .data_in (intermediate_buffer_data),
         .data_out (buffer_output)
     );
 

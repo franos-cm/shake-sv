@@ -28,7 +28,9 @@ module permute_fsm (
     input  logic output_buffer_available,
     output logic output_buffer_available_clr,
     output logic last_output_block_wr,
-    output logic output_buffer_we
+    output logic output_buffer_we,
+
+    input logic buffer_ready_clr_delay
 );
 
     // FSM states
@@ -40,6 +42,7 @@ module permute_fsm (
         ABSORB_LAST,
         DUMP,
         SQUEEZE,
+        DELAY,
         WAIT_DUMP
     } state_t;
     state_t current_state, next_state;
@@ -83,7 +86,6 @@ module permute_fsm (
                     copy_control_data = 1;
                     absorb_enable = 1;
                     round_en = 1;
-                    input_buffer_ready_clr = 1;
                     next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
                     last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
@@ -100,7 +102,6 @@ module permute_fsm (
                     next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
                     absorb_enable = 1;
                     round_en = 1;
-                    input_buffer_ready_clr = 1;
                     last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
             end
@@ -115,14 +116,13 @@ module permute_fsm (
                     // NOTE: this round_start condition is necessary so we delay one cycle for XORing the new block
                     // But since the input_buffer_ready handshaking takes an extra clock, we can clear it earlier
                     absorb_enable = round_start;
-                    input_buffer_ready_clr = round_done;
+                    input_buffer_ready_clr = buffer_ready_clr_delay;
                 end
 
                 // Or, if round is done, and the last block is waiting to be absorbed, we change states
                 else if (round_done && input_buffer_ready && last_block_in_input_buffer) begin
                     next_state = ABSORB_LAST;
                     last_block_in_buffer_clr = 1;
-                    input_buffer_ready_clr   = 1;
                     round_en = 1; // NOTE: we do this so the counter resets
                 end
                 // Otherwise, round is done and the next block is not ready for absorption, and we go back to waiting
@@ -134,10 +134,15 @@ module permute_fsm (
 
             // Absorbs last block
             ABSORB_LAST: begin
-                next_state = round_done ? DUMP : ABSORB_LAST;
+                next_state = round_done ? DELAY : ABSORB_LAST;
                 round_en = 1;
                 // NOTE: this round_start condition is necessary so we delay one cycle for XORing the new block
                 absorb_enable = round_start;
+                input_buffer_ready_clr = buffer_ready_clr_delay;
+            end
+
+            DELAY: begin
+                next_state = DUMP;
             end
 
             // If output buffer is ready, dump digest on it
