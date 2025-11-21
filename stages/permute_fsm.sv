@@ -35,6 +35,7 @@ module permute_fsm (
     typedef enum logic [5:0] {
         RESET,
         WAIT_FIRST_ABSORB,
+        XOR_ABSORB,
         ABSORB,
         WAIT_NEXT_ABSORB,
         ABSORB_LAST,
@@ -80,13 +81,17 @@ module permute_fsm (
                     next_state = WAIT_FIRST_ABSORB;
                 end
                 else begin
+                    next_state = XOR_ABSORB;
                     copy_control_data = 1;
                     absorb_enable = 1;
-                    round_en = 1;
                     input_buffer_ready_clr = 1;
-                    next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
-                    last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
+            end
+
+            XOR_ABSORB: begin
+                round_en = 1;
+                next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
+                last_block_in_buffer_clr = last_block_in_input_buffer;
             end
 
             // Wait until first pipeline stage stays buffer is ready again
@@ -97,11 +102,9 @@ module permute_fsm (
                     next_state = WAIT_NEXT_ABSORB;
                 end
                 else begin
-                    next_state = last_block_in_input_buffer ? ABSORB_LAST : ABSORB;
+                    next_state = XOR_ABSORB;
                     absorb_enable = 1;
-                    round_en = 1;
                     input_buffer_ready_clr = 1;
-                    last_block_in_buffer_clr = last_block_in_input_buffer;
                 end
             end
 
@@ -111,10 +114,10 @@ module permute_fsm (
                 // Either round is not done, or it is done and we can go straight to absorbing the next (non last) block
                 if ((!round_done) || (round_done && input_buffer_ready && !last_block_in_input_buffer)) begin
                     next_state = ABSORB;
-                    round_en = 1;
                     // NOTE: this round_start condition is necessary so we delay one cycle for XORing the new block
                     // But since the input_buffer_ready handshaking takes an extra clock, we can clear it earlier
                     absorb_enable = round_start;
+                    round_en = !round_start;
                     input_buffer_ready_clr = round_done;
                 end
 
@@ -135,7 +138,7 @@ module permute_fsm (
             // Absorbs last block
             ABSORB_LAST: begin
                 next_state = round_done ? DUMP : ABSORB_LAST;
-                round_en = 1;
+                round_en = !round_start;
                 // NOTE: this round_start condition is necessary so we delay one cycle for XORing the new block
                 absorb_enable = round_start;
             end

@@ -40,7 +40,7 @@ module permute_datapath (
     logic[STATE_WIDTH-1:0] state_reg_in;
     logic[STATE_WIDTH-1:0] state_reg_out;
     logic[STATE_WIDTH-1:0] round_in;
-    logic[STATE_WIDTH-1:0] xor_mask;
+    logic[STATE_WIDTH-1:0] xor_mask, xor_mask_reg;
 
 
     // ----------------- Components -----------------
@@ -112,31 +112,32 @@ module permute_datapath (
         .counter(output_size_out)
     );
 
+    // Pipeline register for the XOR mask
+    always_ff @(posedge clk) begin
+        if (rst)
+            xor_mask_reg <= '0;
+        else if (absorb_enable)
+            xor_mask_reg <= xor_mask;
+    end
+
 
     // ------------- Combinatorial assignments -------------
     //
-    // Enables absorption of input by the keccak round
+    // Enables absorption of input by the keccak round, and
+    // decide block size based on current operation mode
     always_comb begin
-        if (!absorb_enable)
-            xor_mask = '0;
-        else if (operation_mode_out == SHAKE256_MODE_VEC)
+        if (operation_mode_out == SHAKE256_MODE_VEC) begin
             xor_mask = {rate_input[RATE_SHAKE256-1 : 0], {CAP_SHAKE256{1'b0}}};
-        else if (operation_mode_out == SHAKE128_MODE_VEC)
+            block_size = RATE_SHAKE256_VEC;
+        end else begin
             xor_mask = {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}};
-        else
-            xor_mask = '0;
+            block_size = RATE_SHAKE128_VEC;
+        end
+    end
 
-    end
-    assign round_in = state_reg_out ^ xor_mask;
+    assign round_in = state_reg_out ^ xor_mask_reg;
     
-    // Decide block size based on current operation mode
-    always_comb begin
-        unique case (operation_mode_out)
-            SHAKE256_MODE_VEC : block_size = RATE_SHAKE256_VEC;
-            SHAKE128_MODE_VEC : block_size = RATE_SHAKE128_VEC;
-            default: block_size = '0;
-        endcase
-    end
+    
 
     // NOTE: kind of a hacky way of enable passthrough so we can
     // get the correct value of operation mode in the first absorb
