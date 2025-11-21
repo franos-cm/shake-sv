@@ -5,7 +5,6 @@ module sipo_buffer #(
     parameter int DEPTH
 ) (
     input  logic          clk,
-    input  logic          rst,
     input  logic          en,
     input  logic[WIDTH-1:0]           data_i,
     output logic[(DEPTH*WIDTH)-1:0]   data_o

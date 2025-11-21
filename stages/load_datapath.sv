@@ -121,7 +121,6 @@ module load_datapath (
         .DEPTH(RATE_SHAKE128/w)
     ) input_buffer(
         .clk (clk),
-        .rst (rst),
         .en (load_enable),
         .data_i (padded_data_le),
         .data_o (rate_input)

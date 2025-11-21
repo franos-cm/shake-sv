@@ -10,15 +10,11 @@ module regn #(
     input  logic [WIDTH-1:0] data_i,
     output logic [WIDTH-1:0] data_o
 );
-    logic [WIDTH-1:0] buffer;
-
     always_ff @(posedge clk) begin
         if (rst)
-            buffer <= INIT;
+            data_o <= INIT;
         else if (en)
-            buffer <= data_i;
+            data_o <= data_i;
     end
-    
-    assign data_o = buffer;
 
 endmodule
