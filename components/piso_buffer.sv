@@ -5,7 +5,6 @@ module piso_buffer #(
     parameter int DEPTH
 ) (
     input  logic                     clk,
-    input  logic                     rst,
     input  logic                     write_enable,
     input  logic                     shift_enable,
     input  logic[(DEPTH*WIDTH)-1:0]  data_i,
@@ -22,8 +21,6 @@ module piso_buffer #(
                 // shift
                 for (int i = DEPTH - 1; i > 0; i--)
                     buffer_data[i] <= buffer_data[i - 1];
-                // NOTE: overwritting the buffers is, in theory, unnecessary (just like reseting them).
-                // buffer_data[0] <= '0;
         end
 
     assign data_o = buffer_data[DEPTH - 1];

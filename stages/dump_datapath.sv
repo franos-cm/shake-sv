@@ -70,7 +70,6 @@ module dump_datapath (
         .DEPTH(RATE_SHAKE128/w)
     ) output_buffer(
         .clk (clk),
-        .rst (rst),
         .write_enable (output_buffer_we),
         .shift_enable (output_buffer_shift_en),
         .data_i (rate_output),

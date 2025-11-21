@@ -121,21 +121,17 @@ module permute_datapath (
             xor_mask = '0;
         else if (operation_mode_out == SHAKE256_MODE_VEC)
             xor_mask = {rate_input[RATE_SHAKE256-1 : 0], {CAP_SHAKE256{1'b0}}};
-        else if (operation_mode_out == SHAKE128_MODE_VEC)
-            xor_mask = {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}};
         else
-            xor_mask = '0;
-
+            xor_mask = {rate_input[RATE_SHAKE128-1 : 0], {CAP_SHAKE128{1'b0}}};
     end
     assign round_in = state_reg_out ^ xor_mask;
     
     // Decide block size based on current operation mode
     always_comb begin
-        unique case (operation_mode_out)
-            SHAKE256_MODE_VEC : block_size = RATE_SHAKE256_VEC;
-            SHAKE128_MODE_VEC : block_size = RATE_SHAKE128_VEC;
-            default: block_size = '0;
-        endcase
+        if (operation_mode_out == SHAKE256_MODE_VEC)
+            block_size = RATE_SHAKE256_VEC;
+        else
+            block_size = RATE_SHAKE128_VEC;
     end
 
     // NOTE: kind of a hacky way of enable passthrough so we can
