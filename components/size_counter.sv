@@ -6,7 +6,7 @@ module size_counter #(
 ) (
     input  logic clk,
     input  logic rst,
-    input  logic [WIDTH-1:0] data_in,
+    input  logic [WIDTH-1:0] data_i,
     input  logic [WIDTH-1:0] step_size,
     input  logic [10:0] block_size,
     input  logic en_data,
@@ -31,7 +31,7 @@ module size_counter #(
                 _block <= block_size;
 
             if (en_data)
-                _counter <= data_in;
+                _counter <= data_i;
             else if (en_count) begin
                 if (_counter < step_size)
                     _counter <= '0;

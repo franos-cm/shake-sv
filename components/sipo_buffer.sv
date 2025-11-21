@@ -7,8 +7,8 @@ module sipo_buffer #(
     input  logic          clk,
     input  logic          rst,
     input  logic          en,
-    input  logic[WIDTH-1:0]           data_in,
-    output logic[(DEPTH*WIDTH)-1:0]   data_out
+    input  logic[WIDTH-1:0]           data_i,
+    output logic[(DEPTH*WIDTH)-1:0]   data_o
 );
     logic [WIDTH-1:0] buffer_data [DEPTH-1:0];
 
@@ -17,12 +17,12 @@ module sipo_buffer #(
             // shift
             for (int i = 0; i < DEPTH - 1; i++)
                 buffer_data[i] <= buffer_data[i + 1];
-            buffer_data[DEPTH - 1] <= data_in;
+            buffer_data[DEPTH - 1] <= data_i;
         end
 
     always_comb begin
         for (int i = 0; i < DEPTH; i++) begin
-            data_out[(i+1)*WIDTH-1 -: WIDTH] = buffer_data[DEPTH-1-i];
+            data_o[(i+1)*WIDTH-1 -: WIDTH] = buffer_data[DEPTH-1-i];
         end
     end
 endmodule

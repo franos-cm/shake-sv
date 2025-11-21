@@ -6,8 +6,8 @@ module load_stage (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic valid_in,
-    input logic[w-1:0] data_in,
+    input  logic valid_i,
+    input logic[w-1:0] data_i,
         
     // Inputs for next stage
     output logic[RATE_SHAKE128-1:0] rate_input,
@@ -15,7 +15,7 @@ module load_stage (
     output logic[1:0] operation_mode,
 
     // External outputs
-    output logic ready_out,
+    output logic ready_i,
 
     // Pipeline handshaking
     input  logic input_buffer_ready,
@@ -40,7 +40,7 @@ module load_stage (
         // External inputs
         .clk                           (clk),
         .rst                           (rst),
-        .valid_in                      (valid_in),
+        .valid_i                       (valid_i),
         // Status signals
         .input_buffer_full             (input_buffer_full),
         .first_incomplete_input_word   (first_incomplete_input_word),
@@ -58,14 +58,14 @@ module load_stage (
         .input_buffer_ready_wr         (input_buffer_ready_wr),
         .last_block_in_buffer_wr       (last_block_in_buffer_wr),
         // External outputs
-        .ready_out                     (ready_out)
+        .ready_i                       (ready_i)
     );
 
     load_datapath load_stage_datapath (
         // External inputs
         .clk                           (clk),
         .rst                           (rst),
-        .data_in                       (data_in),
+        .data_i                        (data_i),
         // Control signals
         .control_regs_enable           (control_regs_enable),
         .load_enable                   (load_enable),

@@ -7,20 +7,20 @@ module keccak (
     input  logic rst,
 
     // Control input signals
-    input  logic ready_in,
-    input  logic valid_in,
+    input  logic ready_o,
+    input  logic valid_i,
     // Control input signals
-    output  logic ready_out,
-    output  logic valid_out,
+    output  logic ready_i,
+    output  logic valid_o,
 
     // Data input signals
-    input logic[w-1:0] data_in,
+    input logic[w-1:0] data_i,
     // Data output signals
-    output logic[w-1:0] data_out
+    output logic[w-1:0] data_o
 );
 
     // Changing polarity to be coherent with reference_code
-    logic valid_in_internal, ready_in_internal;
+    logic valid_i_internal, ready_o_internal;
 
     // First to second stage data signals
     logic[RATE_SHAKE128-1:0] rate_input;
@@ -41,8 +41,8 @@ module keccak (
 
 
     // Polarity change
-    assign valid_in_internal = !valid_in;
-    assign ready_in_internal = !ready_in;
+    assign valid_i_internal = !valid_i;
+    assign ready_o_internal = !ready_o;
 
 
     // First pipeline stage
@@ -50,14 +50,14 @@ module keccak (
         // External inputs
         .clk                     (clk),
         .rst                     (rst),
-        .valid_in                (valid_in_internal),
-        .data_in                 (data_in),
+        .valid_i                (valid_i_internal),
+        .data_i                 (data_i),
         // Outputs for next stage
         .rate_input              (rate_input),
         .operation_mode          (operation_mode_load_stage),
         .output_size             (output_size_load_stage),
         // External outputs
-        .ready_out               (ready_out),
+        .ready_i               (ready_i),
         // Second stage pipeline handshaking
         .input_buffer_ready      (input_buffer_ready && !input_buffer_ready_clr), // NOTE: passthrough of clear signal
         .input_buffer_ready_wr   (input_buffer_ready_wr),
@@ -122,15 +122,15 @@ module keccak (
         // External inputs
         .clk                         (clk),
         .rst                         (rst),
-        .ready_in                    (ready_in_internal),
+        .ready_o                    (ready_o_internal),
         // Inputs from previous stage
         .rate_output                 (rate_output),
         .operation_mode              (operation_mode_permute_stage),
         .output_size                 (output_size_permute_stage),
         .output_buffer_we            (output_buffer_we),
         // External outputs
-        .data_out                    (data_out),
-        .valid_out                   (valid_out),
+        .data_o                    (data_o),
+        .valid_o                   (valid_o),
         // Second stage pipeline handshaking
         .last_output_block           (last_output_block),
         .last_output_block_clr       (last_output_block_clr),

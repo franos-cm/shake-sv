@@ -8,15 +8,15 @@ module piso_buffer #(
     input  logic                     rst,
     input  logic                     write_enable,
     input  logic                     shift_enable,
-    input  logic[(DEPTH*WIDTH)-1:0]  data_in,
-    output logic[WIDTH-1:0]          data_out
+    input  logic[(DEPTH*WIDTH)-1:0]  data_i,
+    output logic[WIDTH-1:0]          data_o
 );
     logic [WIDTH-1:0] buffer_data [DEPTH-1:0];
 
     always_ff @(posedge clk)
         if (write_enable) begin
             for (int i = 0; i < DEPTH; i++)
-                buffer_data[i] <= data_in[(DEPTH-i)*(WIDTH)-1 -: WIDTH];
+                buffer_data[i] <= data_i[(DEPTH-i)*(WIDTH)-1 -: WIDTH];
         end
         else if (shift_enable) begin
                 // shift
@@ -26,5 +26,5 @@ module piso_buffer #(
                 // buffer_data[0] <= '0;
         end
 
-    assign data_out = buffer_data[DEPTH - 1];
+    assign data_o = buffer_data[DEPTH - 1];
 endmodule

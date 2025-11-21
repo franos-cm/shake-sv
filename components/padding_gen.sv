@@ -5,7 +5,7 @@ import keccak_pkg::*;
 module padding_generator (
     // Data in
     input  logic  clk,
-    input logic[w-1:0] data_in,
+    input logic[w-1:0] data_i,
 
     // Control signals
     input logic [w_byte_width:0] remaining_valid_bytes, // How many of the input bytes are valid
@@ -15,7 +15,7 @@ module padding_generator (
 
     // Data out
     output logic last_block,
-    output logic[w-1:0] data_out
+    output logic[w-1:0] data_o
 );
     // Domain separator for SHAKE, is appended just after message 
     localparam logic [7:0] DOMAIN_SEPARATOR_BYTE = 8'h1F;
@@ -57,7 +57,7 @@ module padding_generator (
         endcase
 
         for (int i = 0; i < w_byte_size; i++)
-            data_out[(i+1)*8-1 -: 8] = padding_mask_sel[i] ? byte_pad[i] : data_in[(i+1)*8-1 -: 8];
+            data_o[(i+1)*8-1 -: 8] = padding_mask_sel[i] ? byte_pad[i] : data_i[(i+1)*8-1 -: 8];
     end
 
 

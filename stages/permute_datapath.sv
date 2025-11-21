@@ -52,8 +52,8 @@ module permute_datapath (
         .clk  (clk),
         .rst (rst),
         .en (copy_control_data),
-        .data_in (operation_mode_in),
-        .data_out (operation_mode_reg)
+        .data_i (operation_mode_in),
+        .data_o (operation_mode_reg)
     );
 
 
@@ -84,8 +84,8 @@ module permute_datapath (
         .clk  (clk),
         .rst (state_reset),
         .en (round_en),
-        .data_in (state_reg_in),
-        .data_out (state_reg_out)
+        .data_i (state_reg_in),
+        .data_o (state_reg_out)
     );
 
     // Keccak round
@@ -107,7 +107,7 @@ module permute_datapath (
         .en_count(output_size_count_en),
         .block_size(block_size),
         .step_size({21'b0, block_size}),
-        .data_in(output_size_in),
+        .data_i(output_size_in),
         .last_block(last_output_block),
         .counter(output_size_out)
     );

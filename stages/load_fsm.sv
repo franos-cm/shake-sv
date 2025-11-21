@@ -4,7 +4,7 @@ module load_fsm (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic valid_in,
+    input  logic valid_i,
 
     // Status signals
     input  logic input_buffer_full,
@@ -26,7 +26,7 @@ module load_fsm (
     output logic last_block_in_buffer_wr,
 
     // External outputs
-    output logic ready_out
+    output logic ready_i
 );
 
     // FSM states
@@ -50,7 +50,7 @@ module load_fsm (
 
     // -------------- Mealy Finite State Machine --------------
     always_comb begin
-        ready_out              = 0;
+        ready_i                = 0;
         load_enable            = 0;
         input_buffer_ready_wr  = 0;
         control_regs_enable    = 0;
@@ -66,13 +66,13 @@ module load_fsm (
                 padding_reset = 1;
             end
 
-            // Waits for initial input (valid_in = 1), and when that happens,
+            // Waits for initial input (valid_i = 1), and when that happens,
             // registers input_length, output_length, and mode, in first stage regs
             WAIT_HEADER: begin
-                if (valid_in) begin
+                if (valid_i) begin
                     next_state = WAIT_LOAD;
                     control_regs_enable = 1;
-                    ready_out = 1;
+                    ready_i = 1;
                 end else begin
                     next_state = WAIT_HEADER;
                 end
@@ -84,14 +84,14 @@ module load_fsm (
                 input_counter_load = 1;
             end
 
-            //  When it is available, load sipo according to valid_in
+            //  When it is available, load sipo according to valid_i
             LOAD: begin
-                // Start padding once the final input word is in data_in
-                padding_enable = (input_size_reached) || (first_incomplete_input_word && valid_in);
-                // Either the data in data_in is valid, or we already started padding
-                load_enable = valid_in || input_size_reached;
+                // Start padding once the final input word is in data_i
+                padding_enable = (input_size_reached) || (first_incomplete_input_word && valid_i);
+                // Either the data in data_i is valid, or we already started padding
+                load_enable = valid_i || input_size_reached;
                 input_counter_en = load_enable;
-                ready_out = valid_in && !input_size_reached;
+                ready_i = valid_i && !input_size_reached;
                 next_state = LOAD;
 
                 if (!input_buffer_full || (input_buffer_full && !load_enable)) begin

@@ -6,7 +6,7 @@ module load_datapath (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic[w-1:0] data_in,
+    input  logic[w-1:0] data_i,
 
     // Control signals
     input  logic control_regs_enable,
@@ -48,8 +48,8 @@ module load_datapath (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
-        .data_in (data_in[62:61]), // NOTE: only these middle bits are needed, since those are the ones that change
-        .data_out (operation_mode)
+        .data_i (data_i[62:61]), // NOTE: only these middle bits are needed, since those are the ones that change
+        .data_o (operation_mode)
     );
 
     // Output size reg, to transmit to next pipeline stage
@@ -59,8 +59,8 @@ module load_datapath (
         .clk  (clk),
         .rst (rst),
         .en (control_regs_enable),
-        .data_in ({4'b0, data_in[59:32]}),
-        .data_out (output_size)
+        .data_i ({4'b0, data_i[59:32]}),
+        .data_o (output_size)
     );
 
     // Input size counter
@@ -70,7 +70,7 @@ module load_datapath (
     ) input_size_left (
         .clk (clk),
         .rst (rst),
-        .data_in(data_in[31:0]),
+        .data_i(data_i[31:0]),
         .step_size(w),
         .en_data(control_regs_enable),
         .en_count(load_enable),
@@ -91,13 +91,13 @@ module load_datapath (
     assign last_word_in_block = (input_buffer_counter == {max_buffer_depth[4:1], 1'b0});
     padding_generator padding_gen (
         .clk (clk),
-        .data_in (data_in),
+        .data_i (data_i),
         .remaining_valid_bytes(remaining_valid_bytes),
         .padding_enable(padding_enable),
         .last_word_in_block(last_word_in_block),
         .padding_reset(padding_reset),
         .last_block(last_input_block),
-        .data_out(padded_data)
+        .data_o(padded_data)
     );
 
     // Counter for input buffer: corresponds to how many positions are filled
@@ -123,8 +123,8 @@ module load_datapath (
         .clk (clk),
         .rst (rst),
         .en (load_enable),
-        .data_in (padded_data_le),
-        .data_out (rate_input)
+        .data_i (padded_data_le),
+        .data_o (rate_input)
     );
 
 

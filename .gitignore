@@ -3,3 +3,4 @@ vivado/
 *.log
 *.jou
 *.str
+*.pb

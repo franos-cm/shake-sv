@@ -6,7 +6,7 @@ module dump_stage (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic ready_in,
+    input  logic ready_o,
 
     // Inputs from previous stage
     input  logic[RATE_SHAKE128-1:0] rate_output,
@@ -15,8 +15,8 @@ module dump_stage (
     input  logic output_buffer_we,
 
     // Outputs for next stage
-    output logic[w-1:0] data_out,
-    output logic valid_out,
+    output logic[w-1:0] data_o,
+    output logic valid_o,
 
     // Second stage pipeline handshaking
     input  logic last_output_block,
@@ -33,7 +33,7 @@ module dump_stage (
         // External inputs
         .clk                         (clk),
         .rst                         (rst),
-        .ready_in                    (ready_in),
+        .ready_o                     (ready_o),
         // Inputs from previous stage
         .output_buffer_we_in         (output_buffer_we),
         .last_output_block_in        (last_output_block),
@@ -51,7 +51,7 @@ module dump_stage (
         .output_buffer_available_wr  (output_buffer_available_wr),
         .last_output_block_clr       (last_output_block_clr),
         // External outputs
-        .valid_out                   (valid_out)
+        .valid_o                     (valid_o)
     );
 
     dump_datapath dump_stage_datapath (
@@ -71,9 +71,9 @@ module dump_stage (
         .valid_bytes_reset       (valid_bytes_reset),
         .valid_bytes_enable      (valid_bytes_enable),
         // Status signals
-        .last_word_from_block     (last_word_from_block),
+        .last_word_from_block    (last_word_from_block),
         // External outputs
-        .data_out                (data_out)
+        .data_o                  (data_o)
     );
 
 endmodule

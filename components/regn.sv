@@ -7,8 +7,8 @@ module regn #(
     input  logic clk,
     input  logic rst,
     input  logic en,
-    input  logic [WIDTH-1:0] data_in,
-    output logic [WIDTH-1:0] data_out
+    input  logic [WIDTH-1:0] data_i,
+    output logic [WIDTH-1:0] data_o
 );
     logic [WIDTH-1:0] buffer;
 
@@ -16,9 +16,9 @@ module regn #(
         if (rst)
             buffer <= INIT;
         else if (en)
-            buffer <= data_in;
+            buffer <= data_i;
     end
     
-    assign data_out = buffer;
+    assign data_o = buffer;
 
 endmodule

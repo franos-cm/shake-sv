@@ -25,7 +25,7 @@ module dump_datapath (
     output logic last_word_from_block,
 
     // External outputs
-    output logic[w-1:0] data_out
+    output logic[w-1:0] data_o
 );
     // ---------- Internal signals declaration ----------
     //
@@ -61,8 +61,8 @@ module dump_datapath (
         .clk  (clk),
         .rst (valid_bytes_reset),
         .en (valid_bytes_enable),
-        .data_in (remaining_valid_bytes),
-        .data_out (remaining_valid_bytes_reg)
+        .data_i (remaining_valid_bytes),
+        .data_o (remaining_valid_bytes_reg)
     );
 
     piso_buffer #(
@@ -73,8 +73,8 @@ module dump_datapath (
         .rst (rst),
         .write_enable (output_buffer_we),
         .shift_enable (output_buffer_shift_en),
-        .data_in (rate_output),
-        .data_out (buffer_output)
+        .data_i (rate_output),
+        .data_o (buffer_output)
     );
 
     // ----------------- Combinatorial assignments -----------------
@@ -96,7 +96,7 @@ module dump_datapath (
     assign zero_mask_sel = (last_word_from_block && remaining_valid_bytes_reg) ? (8'hFF >> remaining_valid_bytes_reg) : '0;
     always_comb begin
         for (int i = 0; i < w_byte_size; i++)
-            data_out[(i+1)*8-1 -: 8] = zero_mask_sel[i] ? 8'h00 : buffer_output[(i+1)*8-1 -: 8];
+            data_o[(i+1)*8-1 -: 8] = zero_mask_sel[i] ? 8'h00 : buffer_output[(i+1)*8-1 -: 8];
     end
 
 endmodule

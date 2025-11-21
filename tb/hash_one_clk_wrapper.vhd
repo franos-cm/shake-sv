@@ -33,13 +33,13 @@ architecture wrapper of hash_one_clk_wrapper is
 begin
     abc:  entity work.keccak(structure)
             port map (
-                rst         => rst,
-                clk         => clk,
-                data_in     => din,
-                data_out    => dout,
-                ready_out   => src_read,
-                valid_in    => src_ready,
-                valid_out   => dst_write,
-                ready_in    => dst_ready
+                rst       => rst,
+                clk       => clk,
+                data_i    => din,
+                data_o    => dout,
+                ready_i   => src_read,
+                valid_i   => src_ready,
+                valid_o   => dst_write,
+                ready_o   => dst_ready
         );
 end wrapper;

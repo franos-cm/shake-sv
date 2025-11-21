@@ -4,7 +4,7 @@ module dump_fsm (
     // External inputs
     input  logic clk,
     input  logic rst,
-    input  logic ready_in,
+    input  logic ready_o,
 
     // Status signals
     input  logic last_word_from_block,
@@ -25,7 +25,7 @@ module dump_fsm (
     output logic output_buffer_available_wr,
 
     // External outputs
-    output logic valid_out
+    output logic valid_o
 );
 
     // FSM states
@@ -49,7 +49,7 @@ module dump_fsm (
         output_counter_load        = 0;
         output_buffer_shift_en     = 0;
         output_buffer_available_wr = 0;
-        valid_out                  = 0;
+        valid_o                    = 0;
         valid_bytes_enable         = 0;
         last_output_block_clr      = rst;
         output_counter_rst         = rst;
@@ -72,18 +72,18 @@ module dump_fsm (
             end
 
             WRITING: begin
-                // NOTE: in theory, probably we could do valid_out = 1 here,
+                // NOTE: in theory, probably we could do valid_o = 1 here,
                 //       but this more closely mirrors the original module.
-                valid_out = ready_in;
+                valid_o = ready_o;
 
-                if (last_word_from_block && ready_in) begin
+                if (last_word_from_block && ready_o) begin
                     output_buffer_available_wr = 1;
                     last_output_block_clr = 1;
                     output_buffer_shift_en = 1; // NOTE: unecessary, but mirrors original
                     next_state = IDLE;
                 end
                 else begin
-                    output_buffer_shift_en = ready_in;
+                    output_buffer_shift_en = ready_o;
                     next_state = WRITING;
                 end
             end
