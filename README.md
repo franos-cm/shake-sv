@@ -2,7 +2,7 @@
 
 This project is a SystemVerilog implementation of the Keccak cryptographic hash function, specifically the SHAKE128 and SHAKE256 variants.
 
-It is heavily inspired by [a similar project in VHDL](https://github.com/GMUCERG/SHAKE), using not only the same interface for the design unit, but also the exact same testbenches for validating it.
+It is heavily inspired by [a similar project in VHDL](https://github.com/GMUCERG/SHAKE), and uses the exact same interface and handshake protocol.
 Therefore, reading the documentation for the original project is highly recommended.
 
 
