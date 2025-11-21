@@ -121,7 +121,6 @@ module load_datapath (
         .DEPTH(RATE_SHAKE128/w)
     ) input_buffer(
         .clk (clk),
-        .rst (rst),
         .en (load_enable),
         .data_i (padded_data_le),
         .data_o (rate_input)
@@ -132,11 +131,11 @@ module load_datapath (
     //
     // Decide block size based on current operation mode
     always_comb begin
-        unique case (operation_mode)
-            SHAKE256_MODE_VEC: max_buffer_depth = 5'd16;
-            SHAKE128_MODE_VEC: max_buffer_depth = 5'd20;
-            default: max_buffer_depth = 5'd20;
-        endcase
+        if (operation_mode == SHAKE256_MODE_VEC) begin
+            max_buffer_depth = 5'd16;
+        end else begin
+            max_buffer_depth = 5'd20;
+        end
     end
 
     // Input transformations

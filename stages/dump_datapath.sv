@@ -68,9 +68,8 @@ module dump_datapath (
     piso_buffer #(
         .WIDTH(w),
         .DEPTH(RATE_SHAKE128/w)
-    ) output_buffer(
+    ) output_buffer (
         .clk (clk),
-        .rst (rst),
         .write_enable (output_buffer_we),
         .shift_enable (output_buffer_shift_en),
         .data_i (rate_output),
